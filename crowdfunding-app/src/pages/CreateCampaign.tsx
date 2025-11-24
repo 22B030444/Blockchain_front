@@ -1,4 +1,5 @@
 // pages/CreateCampaign.tsx
+<<<<<<< HEAD
 import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Web3Context } from '../contexts/Web3Context';
@@ -479,9 +480,21 @@ function CreateCampaign() {
                     {loading ? 'Создание...' : 'Создать кампанию'}
                 </button>
             </form>
+=======
+import React from 'react';
+
+function CreateCampaign() {
+    return (
+        <div>
+            <h1>Создать кампанию</h1>
+>>>>>>> 8dcee2145fa27570064a817191db70c717b199a5
         </div>
     );
 }
 
+<<<<<<< HEAD
 export default CreateCampaign;
 
+=======
+export default CreateCampaign;
+>>>>>>> 8dcee2145fa27570064a817191db70c717b199a5

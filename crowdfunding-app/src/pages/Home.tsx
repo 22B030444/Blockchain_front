@@ -1,4 +1,5 @@
 // pages/Home.tsx
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCampaigns } from '../hooks/useCampaigns';
@@ -169,10 +170,23 @@ function Home() {
                     ))}
                 </div>
             )}
+=======
+import React from 'react';
+
+function Home() {
+    return (
+        <div>
+            <h1>Crowdfunding Platform</h1>
+            <p>Главная страница</p>
+>>>>>>> 8dcee2145fa27570064a817191db70c717b199a5
         </div>
     );
 }
 
+<<<<<<< HEAD
 export default Home;
 
 
+=======
+export default Home;
+>>>>>>> 8dcee2145fa27570064a817191db70c717b199a5
