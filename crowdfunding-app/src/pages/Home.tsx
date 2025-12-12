@@ -1,10 +1,13 @@
 // pages/Home.tsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCampaigns } from '../hooks/useCampaigns';
-import { CampaignCategory } from '../types/campaign';
+import { CampaignCategory, CampaignState } from '../types/campaign';
 import CampaignCard from '../components/campaigns/CampaignCard';
 import CategoryFilter from '../components/campaigns/CategoryFilter';
+import { Button } from '../components/ui/button';
+import { Card, CardContent } from '../components/ui/card';
+import { TrendingUp, Users, Target, CheckCircle, Loader2 } from 'lucide-react';
 
 function Home() {
     const navigate = useNavigate();
@@ -13,162 +16,155 @@ function Home() {
 
     if (loading) {
         return (
-            <div style={{ textAlign: 'center', padding: '60px' }}>
-                <h2>Загрузка кампаний...</h2>
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <div className="text-center">
+                    <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mx-auto mb-4" />
+                    <h2 className="text-2xl font-semibold text-gray-700">Загрузка кампаний...</h2>
+                </div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div style={{ textAlign: 'center', padding: '60px' }}>
-                <h2 style={{ color: '#dc3545' }}>Ошибка загрузки</h2>
-                <p>{error}</p>
+            <div className="flex items-center justify-center min-h-[60vh]">
+                <div className="text-center">
+                    <div className="text-red-600 text-6xl mb-4">⚠️</div>
+                    <h2 className="text-2xl font-semibold text-red-600 mb-2">Ошибка загрузки</h2>
+                    <p className="text-gray-600">{error}</p>
+                </div>
             </div>
         );
     }
 
+    const stats = [
+        {
+            label: 'Всего кампаний',
+            value: campaigns.length,
+            icon: TrendingUp,
+            color: 'text-blue-600',
+            bgColor: 'bg-blue-50'
+        },
+        {
+            label: 'Успешных',
+            value: campaigns.filter(c => c.state === CampaignState.Successful).length,
+            icon: CheckCircle,
+            color: 'text-green-600',
+            bgColor: 'bg-green-50'
+        },
+        {
+            label: 'Активных',
+            value: campaigns.filter(c => c.state === CampaignState.Active).length,
+            icon: Target,
+            color: 'text-orange-600',
+            bgColor: 'bg-orange-50'
+        },
+        {
+            label: 'Доноров',
+            value: campaigns.reduce((sum, c) => sum + c.donorsCount, 0),
+            icon: Users,
+            color: 'text-purple-600',
+            bgColor: 'bg-purple-50'
+        }
+    ];
+
     return (
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-            {/* Баннер */}
-            <div style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                padding: '60px 40px',
-                borderRadius: '15px',
-                color: 'white',
-                marginBottom: '40px',
-                textAlign: 'center'
-            }}>
-                <h1 style={{ fontSize: '48px', margin: '0 0 20px 0' }}>
-                    🚀 Crowdfunding Platform
-                </h1>
-                <p style={{ fontSize: '20px', margin: '0 0 30px 0', opacity: 0.9 }}>
-                    Инвестируйте в будущее. Поддержите инновационные проекты на блокчейне.
-                </p>
-                <button
-                    onClick={() => navigate('/create')}
-                    style={{
-                        padding: '15px 40px',
-                        fontSize: '18px',
-                        backgroundColor: 'white',
-                        color: '#667eea',
-                        border: 'none',
-                        borderRadius: '25px',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
-                        transition: 'transform 0.2s'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                >
-                    Создать кампанию
-                </button>
-            </div>
-
-            {/* Статистика */}
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '20px',
-                marginBottom: '40px'
-            }}>
-                <div style={{
-                    padding: '25px',
-                    backgroundColor: '#f8f9fa',
-                    borderRadius: '10px',
-                    textAlign: 'center'
-                }}>
-                    <div style={{ fontSize: '36px', fontWeight: 'bold', color: '#007bff' }}>
-                        {campaigns.length}
+        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                {/* Hero Баннер */}
+                <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 p-12 mb-12 shadow-2xl">
+                    <div className="absolute inset-0 bg-black opacity-10"></div>
+                    <div className="relative z-10 text-center text-white">
+                        <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-200">
+                            Добро пожаловать в CrowdChain
+                        </h1>
+                        <p className="text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto">
+                            Децентрализованная платформа для финансирования инновационных проектов на блокчейне Ethereum
+                        </p>
+                        <Button
+                            onClick={() => navigate('/create')}
+                            size="lg"
+                            className="bg-white text-indigo-600 hover:bg-gray-100 text-lg px-8 py-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                        >
+                            <TrendingUp className="w-5 h-5 mr-2" />
+                            Создать кампанию
+                        </Button>
                     </div>
-                    <div style={{ color: '#666', marginTop: '5px' }}>Кампаний</div>
+
+                    {/* Декоративные элементы */}
+                    <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full opacity-10 blur-2xl"></div>
+                    <div className="absolute bottom-10 right-10 w-40 h-40 bg-pink-300 rounded-full opacity-10 blur-3xl"></div>
                 </div>
 
-                <div style={{
-                    padding: '25px',
-                    backgroundColor: '#f8f9fa',
-                    borderRadius: '10px',
-                    textAlign: 'center'
-                }}>
-                    <div style={{ fontSize: '36px', fontWeight: 'bold', color: '#28a745' }}>
-                        {campaigns.filter(c => c.state === 1).length}
-                    </div>
-                    <div style={{ color: '#666', marginTop: '5px' }}>Успешных</div>
-                </div>
-
-                <div style={{
-                    padding: '25px',
-                    backgroundColor: '#f8f9fa',
-                    borderRadius: '10px',
-                    textAlign: 'center'
-                }}>
-                    <div style={{ fontSize: '36px', fontWeight: 'bold', color: '#ffc107' }}>
-                        {campaigns.filter(c => c.state === 0).length}
-                    </div>
-                    <div style={{ color: '#666', marginTop: '5px' }}>Активных</div>
-                </div>
-
-                <div style={{
-                    padding: '25px',
-                    backgroundColor: '#f8f9fa',
-                    borderRadius: '10px',
-                    textAlign: 'center'
-                }}>
-                    <div style={{ fontSize: '36px', fontWeight: 'bold', color: '#17a2b8' }}>
-                        {campaigns.reduce((sum, c) => sum + c.donorsCount, 0)}
-                    </div>
-                    <div style={{ color: '#666', marginTop: '5px' }}>Доноров</div>
-                </div>
-            </div>
-
-            {/* Фильтр по категориям */}
-            <CategoryFilter
-                selectedCategory={selectedCategory}
-                onSelectCategory={setSelectedCategory}
-            />
-
-            {/* Список кампаний */}
-            {campaigns.length === 0 ? (
-                <div style={{
-                    textAlign: 'center',
-                    padding: '60px',
-                    backgroundColor: '#f8f9fa',
-                    borderRadius: '10px'
-                }}>
-                    <h2 style={{ color: '#666' }}>Пока нет кампаний</h2>
-                    <p style={{ color: '#999' }}>
-                        {selectedCategory !== null
-                            ? 'В этой категории пока нет кампаний'
-                            : 'Будьте первым, кто создаст кампанию!'}
-                    </p>
-                    <button
-                        onClick={() => navigate('/create')}
-                        style={{
-                            marginTop: '20px',
-                            padding: '12px 30px',
-                            backgroundColor: '#007bff',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '5px',
-                            cursor: 'pointer',
-                            fontSize: '16px'
-                        }}
-                    >
-                        Создать кампанию
-                    </button>
-                </div>
-            ) : (
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-                    gap: '25px'
-                }}>
-                    {campaigns.map(campaign => (
-                        <CampaignCard key={campaign.id} campaign={campaign} />
+                {/* Статистика */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    {stats.map((stat, index) => (
+                        <Card key={index} className="hover:shadow-lg transition-shadow duration-300">
+                            <CardContent className="p-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm text-gray-600 mb-1">{stat.label}</p>
+                                        <p className={`text-4xl font-bold ${stat.color}`}>
+                                            {stat.value}
+                                        </p>
+                                    </div>
+                                    <div className={`p-4 rounded-xl ${stat.bgColor}`}>
+                                        <stat.icon className={`w-8 h-8 ${stat.color}`} />
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
                     ))}
                 </div>
-            )}
+
+                {/* Заголовок секции */}
+                <div className="mb-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                        Исследуйте проекты
+                    </h2>
+                    <p className="text-gray-600">
+                        Найдите интересные проекты и поддержите их развитие
+                    </p>
+                </div>
+
+                {/* Фильтр по категориям */}
+                <div className="mb-8">
+                    <CategoryFilter
+                        selectedCategory={selectedCategory}
+                        onSelectCategory={setSelectedCategory}
+                    />
+                </div>
+
+                {/* Список кампаний */}
+                {campaigns.length === 0 ? (
+                    <Card className="p-12">
+                        <div className="text-center">
+                            <div className="text-gray-400 text-6xl mb-4">📦</div>
+                            <h3 className="text-2xl font-semibold text-gray-700 mb-2">
+                                Пока нет кампаний
+                            </h3>
+                            <p className="text-gray-500 mb-6">
+                                {selectedCategory !== null
+                                    ? 'В этой категории пока нет кампаний'
+                                    : 'Будьте первым, кто создаст кампанию!'}
+                            </p>
+                            <Button
+                                onClick={() => navigate('/create')}
+                                variant="gradient"
+                                size="lg"
+                            >
+                                Создать кампанию
+                            </Button>
+                        </div>
+                    </Card>
+                ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {campaigns.map(campaign => (
+                            <CampaignCard key={campaign.id} campaign={campaign} />
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

@@ -18,37 +18,38 @@ export const CATEGORY_NAMES = {
     [CampaignCategory.ECOLOGY]: 'Ecology 🌱'
 };
 
-export enum CampaignState {
-    ACTIVE = 0,
-    SUCCESSFUL = 1,
-    FAILED = 2
+// 👇 ОСТАВЛЯЕМ ОБА: CampaignStatus (новый) и CampaignState (старый для совместимости)
+export enum CampaignStatus {
+    Active = 0,
+    Successful = 1,
+    Failed = 2,
+    Completed = 3
 }
 
+// Алиас для обратной совместимости
+export const CampaignState = CampaignStatus;
+
 export interface Milestone {
-    id: number;
+    title: string;
     description: string;
-    amount: bigint;
-    isCompleted: boolean;
-    isApproved: boolean;
+    percentage: number;
+    targetDate: number;
+    completed: boolean;
+    approved: boolean;
     votesFor: number;
     votesAgainst: number;
-    votingDeadline: number;
-    // Milestone 0 = автоматический вывод (стартовый капитал)
-    // Milestone 1+ = требуют одобрения доноров
 }
 
 export interface Reward {
-    id: number;
-    title: string;
+    minAmount: bigint;
     description: string;
-    minDonation: bigint;
-    totalQuantity: number;
-    claimedQuantity: number;
+    maxQuantity: number;
+    claimed: number;
 }
 
 export interface Review {
-    donor: string;
-    rating: number; // 1-5
+    reviewer: string;
+    rating: number;
     comment: string;
     timestamp: number;
 }
@@ -63,7 +64,10 @@ export interface Campaign {
     deadline: number;
     amountCollected: bigint;
     category: CampaignCategory;
-    state: CampaignState;
+    state: CampaignStatus;
+    minDonation: bigint;
+    createdAt: number;
+    fundsWithdrawn: boolean;
     milestones: Milestone[];
     rewards: Reward[];
     reviews: Review[];

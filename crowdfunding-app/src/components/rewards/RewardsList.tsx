@@ -1,7 +1,9 @@
 // components/rewards/RewardsList.tsx
-import React from 'react';
 import { Reward } from '../../types/campaign';
 import { formatEther } from '../../utils/formatters';
+import { Card, CardContent } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { Gift, CheckCircle, XCircle, DollarSign } from 'lucide-react';
 
 interface RewardsListProps {
     rewards: Reward[];
@@ -14,84 +16,103 @@ function RewardsList({ rewards, userDonation = 0n }: RewardsListProps) {
     }
 
     return (
-        <div style={{ marginTop: '30px' }}>
-            <h2>🎁 Rewards (Награды)</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                {rewards.map((reward) => {
-                    const isAvailable = reward.totalQuantity === 0 || reward.claimedQuantity < reward.totalQuantity;
-                    const isEligible = userDonation >= reward.minDonation;
+        <div className="space-y-4">
+            {rewards.map((reward, index) => {
+                const isAvailable = reward.maxQuantity === 0 || reward.claimed < reward.maxQuantity;
+                const isEligible = userDonation >= reward.minAmount;
+                const remaining = reward.maxQuantity > 0 ? reward.maxQuantity - reward.claimed : null;
 
-                    return (
-                        <div
-                            key={reward.id}
-                            style={{
-                                padding: '20px',
-                                border: '2px solid',
-                                borderColor: isEligible ? '#28a745' : '#ddd',
-                                borderRadius: '10px',
-                                backgroundColor: isEligible ? '#d4edda' : 'white',
-                                opacity: isAvailable ? 1 : 0.6
-                            }}
-                        >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
-                                <div style={{ flex: 1 }}>
-                                    <h3 style={{ margin: '0 0 10px 0' }}>
-                                        {reward.title}
-                                        {isEligible && (
-                                            <span style={{
-                                                marginLeft: '10px',
-                                                fontSize: '12px',
-                                                backgroundColor: '#28a745',
-                                                color: 'white',
-                                                padding: '3px 8px',
-                                                borderRadius: '12px'
-                                            }}>
-                        ✅ Доступно вам
-                      </span>
-                                        )}
-                                    </h3>
-                                    <p style={{ margin: '0 0 15px 0', color: '#666' }}>
-                                        {reward.description}
-                                    </p>
+                return (
+                    <Card
+                        key={index}
+                        className={`${
+                            isEligible
+                                ? 'border-green-200 bg-green-50/30'
+                                : ''
+                        } ${
+                            !isAvailable ? 'opacity-60' : ''
+                        }`}
+                    >
+                        <CardContent className="p-5">
+                            <div className="flex items-start gap-4">
+                                {/* Иконка */}
+                                <div className={`p-3 rounded-lg flex-shrink-0 ${
+                                    isEligible ? 'bg-green-100' : 'bg-gray-100'
+                                }`}>
+                                    <Gift className={`w-6 h-6 ${
+                                        isEligible ? 'text-green-600' : 'text-gray-600'
+                                    }`} />
+                                </div>
 
-                                    <div style={{
-                                        display: 'flex',
-                                        gap: '20px',
-                                        fontSize: '14px',
-                                        color: '#666'
-                                    }}>
-                                        <div>
-                                            <strong>Мин. донат:</strong> {formatEther(reward.minDonation)} ETH
+                                {/* Контент */}
+                                <div className="flex-1">
+                                    <div className="flex items-start justify-between mb-2">
+                                        <div className="flex-1">
+                                            <h3 className="text-lg font-semibold mb-1">
+                                                {reward.description}
+                                            </h3>
+
+                                            <div className="flex flex-wrap gap-2 mb-3">
+                                                {isEligible && (
+                                                    <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                                                        <CheckCircle className="w-3 h-3 mr-1" />
+                                                        Доступно вам
+                                                    </Badge>
+                                                )}
+
+                                                {!isAvailable && (
+                                                    <Badge variant="destructive">
+                                                        <XCircle className="w-3 h-3 mr-1" />
+                                                        Закончились
+                                                    </Badge>
+                                                )}
+                                            </div>
                                         </div>
-                                        {reward.totalQuantity > 0 && (
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3 text-sm">
+                                        <div className="flex items-center gap-2 text-gray-600">
+                                            <DollarSign className="w-4 h-4 text-indigo-600" />
                                             <div>
-                                                <strong>Осталось:</strong> {reward.totalQuantity - reward.claimedQuantity} / {reward.totalQuantity}
+                                                <div className="text-xs text-gray-500">Мин. донат</div>
+                                                <div className="font-semibold text-gray-900">
+                                                    {formatEther(reward.minAmount)} ETH
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {reward.maxQuantity > 0 && (
+                                            <div className="flex items-center gap-2 text-gray-600">
+                                                <Gift className="w-4 h-4 text-purple-600" />
+                                                <div>
+                                                    <div className="text-xs text-gray-500">Доступно</div>
+                                                    <div className="font-semibold text-gray-900">
+                                                        {remaining} / {reward.maxQuantity}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {reward.maxQuantity === 0 && (
+                                            <div className="flex items-center gap-2 text-gray-600">
+                                                <Gift className="w-4 h-4 text-purple-600" />
+                                                <div>
+                                                    <div className="text-xs text-gray-500">Количество</div>
+                                                    <div className="font-semibold text-gray-900">
+                                                        Неограничено
+                                                    </div>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
                                 </div>
-
-                                {!isAvailable && (
-                                    <div style={{
-                                        padding: '8px 15px',
-                                        backgroundColor: '#dc3545',
-                                        color: 'white',
-                                        borderRadius: '5px',
-                                        fontSize: '14px',
-                                        fontWeight: 'bold'
-                                    }}>
-                                        Закончились
-                                    </div>
-                                )}
                             </div>
-                        </div>
-                    );
-                })}
-            </div>
+                        </CardContent>
+                    </Card>
+                );
+            })}
         </div>
     );
 }
 
 export default RewardsList;
-
-

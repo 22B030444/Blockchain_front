@@ -1,8 +1,12 @@
 // components/milestones/MilestonesList.tsx
-import React, { useContext, useState } from 'react';
-import { Web3Context } from '../../contexts/Web3Context';
+import { useState } from 'react';
+import { useWeb3 } from '../../contexts/Web3Context';
 import { Milestone } from '../../types/campaign';
-import { formatEther } from '../../utils/formatters';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
+import { Progress } from '../ui/progress';
+import { Card, CardContent } from '../ui/card';
+import { AlertCircle, Loader2, ThumbsUp, ThumbsDown, CheckCircle, Clock, DollarSign } from 'lucide-react';
 
 interface MilestonesListProps {
     campaignId: number;
@@ -13,19 +17,18 @@ interface MilestonesListProps {
 }
 
 function MilestonesList({ campaignId, milestones, isCreator, isDonor, onUpdate }: MilestonesListProps) {
-    const { contract } = useContext(Web3Context);
+    const { contract } = useWeb3();
     const [loading, setLoading] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
 
-    // Голосование за milestone
-    const handleVote = async (milestoneId: number, voteFor: boolean) => {
+    const handleVote = async (milestoneIndex: number, voteFor: boolean) => {
         if (!contract) return;
 
         try {
-            setLoading(milestoneId);
+            setLoading(milestoneIndex);
             setError(null);
 
-            const tx = await contract.voteForMilestone(campaignId, milestoneId, voteFor);
+            const tx = await contract.voteForMilestone(campaignId, milestoneIndex, voteFor);
             await tx.wait();
 
             onUpdate();
@@ -37,15 +40,14 @@ function MilestonesList({ campaignId, milestones, isCreator, isDonor, onUpdate }
         }
     };
 
-    // Вывод средств по milestone
-    const handleWithdraw = async (milestoneId: number) => {
+    const handleWithdraw = async (milestoneIndex: number) => {
         if (!contract) return;
 
         try {
-            setLoading(milestoneId);
+            setLoading(milestoneIndex);
             setError(null);
 
-            const tx = await contract.withdrawMilestone(campaignId, milestoneId);
+            const tx = await contract.withdrawMilestone(campaignId, milestoneIndex);
             await tx.wait();
 
             onUpdate();
@@ -62,203 +64,165 @@ function MilestonesList({ campaignId, milestones, isCreator, isDonor, onUpdate }
     }
 
     return (
-        <div style={{ marginTop: '30px' }}>
-            <h2>📊 Milestones</h2>
-
+        <div className="space-y-4">
             {error && (
-                <div style={{
-                    padding: '10px',
-                    backgroundColor: '#f8d7da',
-                    color: '#721c24',
-                    borderRadius: '5px',
-                    marginBottom: '15px'
-                }}>
-                    {error}
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-red-800">{error}</p>
                 </div>
             )}
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                {milestones.map((milestone, index) => {
-                    const totalVotes = milestone.votesFor + milestone.votesAgainst;
-                    const approvalRate = totalVotes > 0
-                        ? Math.round((milestone.votesFor / totalVotes) * 100)
-                        : 0;
-                    const isAutomatic = index === 0;
+            {milestones.map((milestone, index) => {
+                const totalVotes = milestone.votesFor + milestone.votesAgainst;
+                const approvalRate = totalVotes > 0
+                    ? Math.round((milestone.votesFor / totalVotes) * 100)
+                    : 0;
+                const isAutomatic = index === 0;
 
-                    return (
-                        <div
-                            key={milestone.id}
-                            style={{
-                                padding: '20px',
-                                border: '2px solid',
-                                borderColor: milestone.isCompleted ? '#28a745' : isAutomatic ? '#17a2b8' : '#ddd',
-                                borderRadius: '10px',
-                                backgroundColor: milestone.isCompleted ? '#d4edda' : 'white'
-                            }}
-                        >
+                return (
+                    <Card
+                        key={index}
+                        className={`${
+                            milestone.completed
+                                ? 'bg-green-50 border-green-200'
+                                : isAutomatic
+                                    ? 'border-blue-200 bg-blue-50/30'
+                                    : ''
+                        }`}
+                    >
+                        <CardContent className="p-5">
                             {/* Заголовок */}
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                marginBottom: '15px'
-                            }}>
-                                <div>
-                                    <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        Milestone {index}
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <h3 className="text-lg font-semibold">
+                                            Этап {index}
+                                        </h3>
                                         {isAutomatic && (
-                                            <span style={{
-                                                fontSize: '12px',
-                                                backgroundColor: '#17a2b8',
-                                                color: 'white',
-                                                padding: '3px 8px',
-                                                borderRadius: '12px'
-                                            }}>
-                        Автоматический
-                      </span>
+                                            <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+                                                Автоматический
+                                            </Badge>
                                         )}
-                                        {!isAutomatic && milestone.isApproved && (
-                                            <span style={{
-                                                fontSize: '12px',
-                                                backgroundColor: '#28a745',
-                                                color: 'white',
-                                                padding: '3px 8px',
-                                                borderRadius: '12px'
-                                            }}>
-                        Одобрен
-                      </span>
+                                        {!isAutomatic && milestone.approved && (
+                                            <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                                                <CheckCircle className="w-3 h-3 mr-1" />
+                                                Одобрен
+                                            </Badge>
                                         )}
-                                    </h3>
-                                    <p style={{ margin: '5px 0 0 0', color: '#666' }}>
-                                        {milestone.description}
-                                    </p>
+                                        {milestone.completed && (
+                                            <Badge className="bg-green-600 text-white hover:bg-green-600">
+                                                <CheckCircle className="w-3 h-3 mr-1" />
+                                                Выведено
+                                            </Badge>
+                                        )}
+                                    </div>
+                                    <p className="text-gray-700">{milestone.title || milestone.description}</p>
                                 </div>
 
-                                <div style={{ textAlign: 'right' }}>
-                                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#007bff' }}>
-                                        {formatEther(milestone.amount)} ETH
+                                <div className="text-right ml-4">
+                                    <div className="text-2xl font-bold text-indigo-600">
+                                        {milestone.percentage}%
                                     </div>
-                                    {milestone.isCompleted && (
-                                        <div style={{ color: '#28a745', fontSize: '14px', marginTop: '5px' }}>
-                                            ✅ Выведено
-                                        </div>
-                                    )}
+                                    <div className="text-sm text-gray-500">от цели</div>
                                 </div>
                             </div>
 
-                            {/* Информация о голосовании (только для milestone 1+) */}
-                            {!isAutomatic && !milestone.isCompleted && (
-                                <div style={{ marginTop: '15px' }}>
-                                    <div style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        marginBottom: '10px',
-                                        fontSize: '14px'
-                                    }}>
-                                        <span>👍 За: {milestone.votesFor}</span>
-                                        <span>👎 Против: {milestone.votesAgainst}</span>
-                                        <span>📊 Одобрение: {approvalRate}%</span>
+                            {/* Голосование (только для milestone 1+) */}
+                            {!isAutomatic && !milestone.completed && (
+                                <div className="space-y-3 pt-3 border-t">
+                                    <div className="flex justify-between text-sm text-gray-600">
+                                        <span className="flex items-center gap-1">
+                                            <ThumbsUp className="w-4 h-4 text-green-600" />
+                                            За: {milestone.votesFor}
+                                        </span>
+                                        <span className="flex items-center gap-1">
+                                            <ThumbsDown className="w-4 h-4 text-red-600" />
+                                            Против: {milestone.votesAgainst}
+                                        </span>
+                                        <span className="font-medium">
+                                            Одобрение: {approvalRate}%
+                                        </span>
                                     </div>
 
-                                    {/* Прогресс бар голосования */}
-                                    <div style={{
-                                        width: '100%',
-                                        height: '10px',
-                                        backgroundColor: '#e9ecef',
-                                        borderRadius: '5px',
-                                        overflow: 'hidden',
-                                        marginBottom: '15px'
-                                    }}>
-                                        <div style={{
-                                            width: `${approvalRate}%`,
-                                            height: '100%',
-                                            backgroundColor: approvalRate >= 50 ? '#28a745' : '#dc3545',
-                                            transition: 'width 0.3s'
-                                        }} />
-                                    </div>
+                                    <Progress
+                                        value={approvalRate}
+                                        className={`h-2 ${approvalRate >= 51 ? 'bg-green-100' : 'bg-red-100'}`}
+                                    />
 
                                     {/* Кнопки голосования для доноров */}
-                                    {isDonor && !milestone.isApproved && (
-                                        <div style={{ display: 'flex', gap: '10px' }}>
-                                            <button
-                                                onClick={() => handleVote(milestone.id, true)}
-                                                disabled={loading === milestone.id}
-                                                style={{
-                                                    flex: 1,
-                                                    padding: '10px',
-                                                    backgroundColor: '#28a745',
-                                                    color: 'white',
-                                                    border: 'none',
-                                                    borderRadius: '5px',
-                                                    cursor: loading === milestone.id ? 'not-allowed' : 'pointer',
-                                                    fontWeight: 'bold'
-                                                }}
+                                    {isDonor && !milestone.approved && (
+                                        <div className="flex gap-2 pt-2">
+                                            <Button
+                                                onClick={() => handleVote(index, true)}
+                                                disabled={loading === index}
+                                                variant="outline"
+                                                className="flex-1 border-green-600 text-green-700 hover:bg-green-50"
                                             >
-                                                👍 За
-                                            </button>
-                                            <button
-                                                onClick={() => handleVote(milestone.id, false)}
-                                                disabled={loading === milestone.id}
-                                                style={{
-                                                    flex: 1,
-                                                    padding: '10px',
-                                                    backgroundColor: '#dc3545',
-                                                    color: 'white',
-                                                    border: 'none',
-                                                    borderRadius: '5px',
-                                                    cursor: loading === milestone.id ? 'not-allowed' : 'pointer',
-                                                    fontWeight: 'bold'
-                                                }}
+                                                {loading === index ? (
+                                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                                ) : (
+                                                    <>
+                                                        <ThumbsUp className="w-4 h-4 mr-1" />
+                                                        За
+                                                    </>
+                                                )}
+                                            </Button>
+                                            <Button
+                                                onClick={() => handleVote(index, false)}
+                                                disabled={loading === index}
+                                                variant="outline"
+                                                className="flex-1 border-red-600 text-red-700 hover:bg-red-50"
                                             >
-                                                👎 Против
-                                            </button>
+                                                {loading === index ? (
+                                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                                ) : (
+                                                    <>
+                                                        <ThumbsDown className="w-4 h-4 mr-1" />
+                                                        Против
+                                                    </>
+                                                )}
+                                            </Button>
                                         </div>
                                     )}
                                 </div>
                             )}
 
                             {/* Кнопка вывода для создателя */}
-                            {isCreator && !milestone.isCompleted && (
-                                <div style={{ marginTop: '15px' }}>
-                                    {(isAutomatic || milestone.isApproved) ? (
-                                        <button
-                                            onClick={() => handleWithdraw(milestone.id)}
-                                            disabled={loading === milestone.id}
-                                            style={{
-                                                width: '100%',
-                                                padding: '12px',
-                                                backgroundColor: loading === milestone.id ? '#6c757d' : '#28a745',
-                                                color: 'white',
-                                                border: 'none',
-                                                borderRadius: '5px',
-                                                cursor: loading === milestone.id ? 'not-allowed' : 'pointer',
-                                                fontWeight: 'bold'
-                                            }}
+                            {isCreator && !milestone.completed && (
+                                <div className="pt-3 border-t mt-3">
+                                    {(isAutomatic || milestone.approved) ? (
+                                        <Button
+                                            onClick={() => handleWithdraw(index)}
+                                            disabled={loading === index}
+                                            variant="default"
+                                            className="w-full bg-green-600 hover:bg-green-700"
                                         >
-                                            {loading === milestone.id ? 'Обработка...' : '💰 Вывести средства'}
-                                        </button>
+                                            {loading === index ? (
+                                                <>
+                                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                    Обработка...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <DollarSign className="w-4 h-4 mr-2" />
+                                                    Вывести средства
+                                                </>
+                                            )}
+                                        </Button>
                                     ) : (
-                                        <div style={{
-                                            padding: '10px',
-                                            backgroundColor: '#fff3cd',
-                                            color: '#856404',
-                                            borderRadius: '5px',
-                                            textAlign: 'center',
-                                            fontSize: '14px'
-                                        }}>
-                                            ⏳ Ожидание одобрения доноров
+                                        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center gap-2 text-sm text-yellow-800">
+                                            <Clock className="w-4 h-4" />
+                                            <span>Ожидание одобрения доноров (требуется 51%)</span>
                                         </div>
                                     )}
                                 </div>
                             )}
-                        </div>
-                    );
-                })}
-            </div>
+                        </CardContent>
+                    </Card>
+                );
+            })}
         </div>
     );
 }
 
 export default MilestonesList;
-
-

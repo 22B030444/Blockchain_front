@@ -1,5 +1,5 @@
 // contexts/Web3Context.tsx
-import { createContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useState, useEffect, ReactNode, useContext } from 'react';
 import { ethers, BrowserProvider, Contract, Signer } from 'ethers';
 import { CROWDFUNDING_ABI, CONTRACT_ADDRESS } from '../contracts/CrowdfundingABI';
 
@@ -22,6 +22,15 @@ export const Web3Context = createContext<Web3ContextType>({
     disconnectWallet: () => {},
     isConnecting: false,
 });
+
+// 👇 ДОБАВЬ ЭТОТ ХУК
+export const useWeb3 = () => {
+    const context = useContext(Web3Context);
+    if (!context) {
+        throw new Error('useWeb3 должен использоваться внутри Web3Provider');
+    }
+    return context;
+};
 
 interface Web3ProviderProps {
     children: ReactNode;
@@ -61,10 +70,10 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
             setSigner(userSigner);
             setContract(crowdfundingContract);
 
-            console.log('Подключен аккаунт:', accounts[0]);
+            console.log('✅ Кошелек подключен:', accounts[0]);
 
         } catch (error) {
-            console.error('Ошибка подключения:', error);
+            console.error('❌ Ошибка подключения:', error);
             alert('Ошибка подключения к MetaMask');
         } finally {
             setIsConnecting(false);
@@ -76,6 +85,7 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
         setContract(null);
         setProvider(null);
         setSigner(null);
+        console.log('👋 Кошелек отключен');
     };
 
     useEffect(() => {
