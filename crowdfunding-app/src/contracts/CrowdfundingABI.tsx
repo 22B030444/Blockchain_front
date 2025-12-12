@@ -1530,5 +1530,4 @@ export const CROWDFUNDING_ABI = [
 ]
 
 
-
 export const CONTRACT_ADDRESS = "0x5bEfD4E1d52F69e848c6bf6Bf50D9c4289eba95D";

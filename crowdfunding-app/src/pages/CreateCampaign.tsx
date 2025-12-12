@@ -121,6 +121,12 @@ function CreateCampaign() {
             return;
         }
 
+        const goalValue = parseFloat(goal);
+        if (goalValue > 1000) {
+            setError('Максимальная цель: 1000 ETH');
+            return;
+        }
+
         try {
             setLoading(true);
             setError(null);
@@ -128,24 +134,28 @@ function CreateCampaign() {
             const deadlineTimestamp = Math.floor(new Date(deadline).getTime() / 1000);
 
             const milestonesData = milestones.map(m => ({
-                description: m.description,
-                percentage: m.percentage
+                title: m.description,        // В ABI это "title", не "description"!
+                percentage: BigInt(m.percentage),
+                targetDate: BigInt(deadlineTimestamp), // Добавь targetDate
+                completed: false,
+                approved: false
             }));
 
-            const rewardsData = rewards.map(r => ({
-                title: r.title,
-                description: r.description,
-                minDonation: parseEther(r.minDonation),
-                quantity: r.quantity
-            }));
+            // Подготовка rewards - С ПРАВИЛЬНЫМИ ТИПАМИ
+            const rewardsData = rewards.map(r => [
+                r.description,                           // description (string)
+                parseEther(r.minDonation.toString()),   // minAmount (uint256)
+                BigInt(r.quantity),                      // maxQuantity (uint256)
+                BigInt(0)                                // claimed (uint256)
+            ]);
 
             const tx = await contract.createCampaign(
                 title,
                 description,
                 imageUrl,
-                parseEther(goal),
-                deadlineTimestamp,
-                category,
+                parseEther(goal.toString()),
+                BigInt(deadlineTimestamp),
+                Number(category),
                 milestonesData,
                 rewardsData
             );
@@ -308,6 +318,8 @@ function CreateCampaign() {
                                         type="number"
                                         step="0.001"
                                         value={goal}
+                                        min="0.001"
+                                        max="1000"
                                         onChange={(e) => setGoal(e.target.value)}
                                         placeholder="10"
                                         required
@@ -487,7 +499,7 @@ function CreateCampaign() {
                         </Button>
                         <Button
                             type="submit"
-                            variant="gradient"
+                            variant="ghost"
                             className="flex-1"
                             disabled={loading}
                         >

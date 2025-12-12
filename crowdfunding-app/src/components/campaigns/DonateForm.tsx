@@ -36,6 +36,12 @@ function DonateForm({ campaignId, campaign, onSuccess }: DonateFormProps) {
             return;
         }
 
+        const donationValue = parseFloat(amount);
+        if (donationValue <= 0 || donationValue > 100) {
+            setError('Сумма доната должна быть от 0.001 до 100 ETH');
+            return;
+        }
+
         try {
             setLoading(true);
             setError(null);

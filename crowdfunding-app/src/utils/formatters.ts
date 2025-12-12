@@ -6,9 +6,18 @@ export const formatEther = (value: bigint): string => {
 };
 
 export const parseEther = (value: string): bigint => {
-    return ethers.parseEther(value);
-};
+    try {
+        const cleanValue = value.trim();
+        if (!cleanValue || isNaN(Number(cleanValue))) {
+            throw new Error('Invalid number');
+        }
 
+        return ethers.parseEther(cleanValue);
+    } catch (error) {
+        console.error('Error parsing ether:', error);
+        return 0n; // Возвращаем 0 при ошибке
+    }
+};
 export const formatAddress = (address: string): string => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
