@@ -11,31 +11,70 @@ export const useCampaign = (campaignId: number) => {
 
     useEffect(() => {
         const fetchCampaign = async () => {
-            if (!contract) return;
+            if (!contract) {
+                setLoading(false);
+                return;
+            }
 
             try {
                 setLoading(true);
+                console.log('Загрузка кампании ID:', campaignId);
+
+                // Проверяем существование кампании
+                const campaignCounter = await contract.campaignCounter();
+                if (campaignId >= Number(campaignCounter)) {
+                    throw new Error('Кампания не существует');
+                }
+
                 const data = await contract.getCampaign(campaignId);
 
-                // Преобразуй данные из контракта в твой тип Campaign
+                // Загружаем дополнительные данные
+                const milestones = await contract.getCampaignMilestones(campaignId);
+                const rewards = await contract.getCampaignRewards(campaignId);
+                const reviews = await contract.getCampaignReviews(campaignId);
+                const averageRating = await contract.getAverageRating(campaignId);
+
                 const campaignData: Campaign = {
-                    id: campaignId,
+                    id: Number(data.id),
                     creator: data.creator,
                     title: data.title,
                     description: data.description,
-                    imageUrl: data.imageUrl,
-                    goal: data.goal,
+                    imageUrl: data.imageHash, // В контракте это imageHash
+                    goal: data.goalAmount,
                     deadline: Number(data.deadline),
-                    amountCollected: data.amountCollected,
+                    amountCollected: data.currentAmount,
                     category: Number(data.category),
-                    state: Number(data.state),
-                    milestones: [], // Загрузим отдельно
-                    rewards: [], // Загрузим отдельно
-                    reviews: [], // Загрузим отдельно
-                    donorsCount: Number(data.donorsCount),
-                    averageRating: Number(data.averageRating)
+                    state: Number(data.status), // В контракте это status
+                    minDonation: data.minDonation,
+                    createdAt: Number(data.createdAt),
+                    fundsWithdrawn: data.fundsWithdrawn,
+                    milestones: milestones.map((m: any) => ({
+                        title: m.title,
+                        description: m.description,
+                        percentage: Number(m.percentage),
+                        targetDate: Number(m.targetDate),
+                        completed: m.completed,
+                        approved: m.approved,
+                        votesFor: Number(m.votesFor),
+                        votesAgainst: Number(m.votesAgainst)
+                    })),
+                    rewards: rewards.map((r: any) => ({
+                        minAmount: r.minAmount,
+                        description: r.description,
+                        maxQuantity: Number(r.maxQuantity),
+                        claimed: Number(r.claimed)
+                    })),
+                    reviews: reviews.map((r: any) => ({
+                        reviewer: r.reviewer,
+                        rating: Number(r.rating),
+                        comment: r.comment,
+                        timestamp: Number(r.timestamp)
+                    })),
+                    donorsCount: Number(data.totalDonors),
+                    averageRating: Number(averageRating)
                 };
 
+                console.log('Кампания загружена:', campaignData);
                 setCampaign(campaignData);
                 setError(null);
             } catch (err) {

@@ -9,7 +9,7 @@ import MilestonesList from '../components/milestones/MilestonesList';
 import RewardsList from '../components/rewards/RewardsList';
 import { formatEther, formatDate, getDaysRemaining, getProgressPercentage, formatAddress } from '../utils/formatters';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent, CardHeader} from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
@@ -39,13 +39,13 @@ function CampaignDetails() {
     const [userDonation, setUserDonation] = useState<bigint>(0n);
     const [isDonor, setIsDonor] = useState(false);
 
-    // Загрузка информации о донате пользователя
     useEffect(() => {
         const fetchUserDonation = async () => {
             if (!contract || !account || !campaign) return;
 
             try {
-                const donation = await contract.getUserDonation(campaignId, account);
+                // ПРАВИЛЬНАЯ ФУНКЦИЯ: getDonorContribution
+                const donation = await contract.getDonorContribution(campaignId, account);
                 setUserDonation(donation);
                 setIsDonor(donation > 0n);
             } catch (err) {

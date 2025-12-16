@@ -11,40 +11,77 @@ export const useCampaigns = (category?: CampaignCategory) => {
 
     useEffect(() => {
         const fetchCampaigns = async () => {
-            if (!contract) return;
+            if (!contract) {
+                setLoading(false);
+                return;
+            }
 
             try {
                 setLoading(true);
-                const count = await contract.getCampaignsCount();
+                console.log('Загрузка кампаний...');
+
+                // Используем getAllCampaigns из контракта
+                const allCampaigns = await contract.getAllCampaigns();
+                console.log('Получено кампаний:', allCampaigns.length);
+
                 const campaignsData: Campaign[] = [];
 
-                for (let i = 0; i < count; i++) {
-                    const data = await contract.getCampaign(i);
+                for (let i = 0; i < allCampaigns.length; i++) {
+                    const data = allCampaigns[i];
 
                     // Фильтрация по категории если указана
                     if (category !== undefined && Number(data.category) !== category) {
                         continue;
                     }
 
+                    // Загружаем дополнительные данные
+                    const milestones = await contract.getCampaignMilestones(data.id);
+                    const rewards = await contract.getCampaignRewards(data.id);
+                    const reviews = await contract.getCampaignReviews(data.id);
+                    const averageRating = await contract.getAverageRating(data.id);
+
                     campaignsData.push({
-                        id: i,
+                        id: Number(data.id),
                         creator: data.creator,
                         title: data.title,
                         description: data.description,
-                        imageUrl: data.imageUrl,
-                        goal: data.goal,
+                        imageUrl: data.imageHash, // В контракте это imageHash
+                        goal: data.goalAmount,
                         deadline: Number(data.deadline),
-                        amountCollected: data.amountCollected,
+                        amountCollected: data.currentAmount,
                         category: Number(data.category),
-                        state: Number(data.state),
-                        milestones: [],
-                        rewards: [],
-                        reviews: [],
-                        donorsCount: Number(data.donorsCount),
-                        averageRating: Number(data.averageRating)
+                        state: Number(data.status), // В контракте это status
+                        minDonation: data.minDonation,
+                        createdAt: Number(data.createdAt),
+                        fundsWithdrawn: data.fundsWithdrawn,
+                        milestones: milestones.map((m: any) => ({
+                            title: m.title,
+                            description: m.description,
+                            percentage: Number(m.percentage),
+                            targetDate: Number(m.targetDate),
+                            completed: m.completed,
+                            approved: m.approved,
+                            votesFor: Number(m.votesFor),
+                            votesAgainst: Number(m.votesAgainst)
+                        })),
+                        rewards: rewards.map((r: any) => ({
+                            minAmount: r.minAmount,
+                            description: r.description,
+                            maxQuantity: Number(r.maxQuantity),
+                            claimed: Number(r.claimed)
+                        })),
+                        reviews: reviews.map((r: any) => ({
+                            reviewer: r.reviewer,
+                            rating: Number(r.rating),
+                            comment: r.comment,
+                            timestamp: Number(r.timestamp)
+                        })),
+                        donorsCount: Number(data.totalDonors),
+                        averageRating: Number(averageRating)
                     });
                 }
 
+                console.log('Обработано кампаний:', campaignsData.length);
                 setCampaigns(campaignsData);
                 setError(null);
             } catch (err) {

@@ -4,24 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { useWeb3 } from '../contexts/Web3Context';
 import { CampaignCategory, CATEGORY_NAMES } from '../types/campaign';
 import { parseEther } from '../utils/formatters';
-import { isValidAmount, isValidDeadline, isValidUrl } from '../utils/validators';
+import { isValidAmount, isValidUrl } from '../utils/validators';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Loader2, Plus, Trash2, AlertCircle, Rocket, Image as ImageIcon, Target, Calendar, Tag } from 'lucide-react';
-
-interface MilestoneInput {
-    description: string;
-    percentage: number;
-}
-
-interface RewardInput {
-    title: string;
-    description: string;
-    minDonation: string;
-    quantity: number;
-}
+import { Loader2, AlertCircle, Rocket, Image as ImageIcon, Target, Calendar, Tag } from 'lucide-react';
 
 function CreateCampaign() {
     const { contract, account } = useWeb3();
@@ -32,55 +19,13 @@ function CreateCampaign() {
     const [description, setDescription] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [goal, setGoal] = useState('');
-    const [deadline, setDeadline] = useState('');
+    const [durationDays, setDurationDays] = useState('');
+    const [minDonation, setMinDonation] = useState('0.001');
     const [category, setCategory] = useState<CampaignCategory>(CampaignCategory.TECHNOLOGY);
-
-    // Milestones
-    const [milestones, setMilestones] = useState<MilestoneInput[]>([
-        { description: 'Стартовый капитал (автоматический вывод)', percentage: 30 }
-    ]);
-
-    // Rewards
-    const [rewards, setRewards] = useState<RewardInput[]>([]);
 
     // Состояние
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
-    // Добавить milestone
-    const addMilestone = () => {
-        setMilestones([...milestones, { description: '', percentage: 0 }]);
-    };
-
-    // Удалить milestone (кроме первого)
-    const removeMilestone = (index: number) => {
-        if (index === 0) return;
-        setMilestones(milestones.filter((_, i) => i !== index));
-    };
-
-    // Обновить milestone
-    const updateMilestone = (index: number, field: keyof MilestoneInput, value: string | number) => {
-        const updated = [...milestones];
-        updated[index] = { ...updated[index], [field]: value };
-        setMilestones(updated);
-    };
-
-    // Добавить reward
-    const addReward = () => {
-        setRewards([...rewards, { title: '', description: '', minDonation: '', quantity: 0 }]);
-    };
-
-    // Удалить reward
-    const removeReward = (index: number) => {
-        setRewards(rewards.filter((_, i) => i !== index));
-    };
-
-    // Обновить reward
-    const updateReward = (index: number, field: keyof RewardInput, value: string | number) => {
-        const updated = [...rewards];
-        updated[index] = { ...updated[index], [field]: value };
-        setRewards(updated);
-    };
 
     // Валидация
     const validate = (): string | null => {
@@ -88,20 +33,8 @@ function CreateCampaign() {
         if (!description.trim()) return 'Укажите описание';
         if (!imageUrl.trim() || !isValidUrl(imageUrl)) return 'Укажите корректный URL изображения';
         if (!isValidAmount(goal)) return 'Укажите корректную цель сбора';
-        if (!deadline || !isValidDeadline(deadline)) return 'Укажите корректный дедлайн';
-
-        const totalPercentage = milestones.reduce((sum, m) => sum + Number(m.percentage), 0);
-        if (totalPercentage !== 100) return 'Сумма процентов milestones должна быть 100%';
-
-        for (let i = 0; i < milestones.length; i++) {
-            if (!milestones[i].description.trim()) return `Milestone ${i}: укажите описание`;
-            if (milestones[i].percentage <= 0) return `Milestone ${i}: процент должен быть > 0`;
-        }
-
-        for (let i = 0; i < rewards.length; i++) {
-            if (!rewards[i].title.trim()) return `Reward ${i + 1}: укажите название`;
-            if (!isValidAmount(rewards[i].minDonation)) return `Reward ${i + 1}: укажите корректную минимальную сумму`;
-        }
+        if (!durationDays || Number(durationDays) <= 0) return 'Укажите длительность кампании';
+        if (!isValidAmount(minDonation)) return 'Укажите корректную минимальную сумму доната';
 
         return null;
     };
@@ -131,33 +64,25 @@ function CreateCampaign() {
             setLoading(true);
             setError(null);
 
-            const deadlineTimestamp = Math.floor(new Date(deadline).getTime() / 1000);
-
-            const milestonesData = milestones.map(m => ({
-                title: m.description,        // В ABI это "title", не "description"!
-                percentage: BigInt(m.percentage),
-                targetDate: BigInt(deadlineTimestamp), // Добавь targetDate
-                completed: false,
-                approved: false
-            }));
-
-            // Подготовка rewards - С ПРАВИЛЬНЫМИ ТИПАМИ
-            const rewardsData = rewards.map(r => [
-                r.description,                           // description (string)
-                parseEther(r.minDonation.toString()),   // minAmount (uint256)
-                BigInt(r.quantity),                      // maxQuantity (uint256)
-                BigInt(0)                                // claimed (uint256)
-            ]);
-
-            const tx = await contract.createCampaign(
+            console.log('Отправка данных в контракт:', {
                 title,
                 description,
                 imageUrl,
-                parseEther(goal.toString()),
-                BigInt(deadlineTimestamp),
-                Number(category),
-                milestonesData,
-                rewardsData
+                category,
+                goal: parseEther(goal),
+                durationDays: Number(durationDays),
+                minDonation: parseEther(minDonation)
+            });
+
+            // ПРАВИЛЬНЫЙ ВЫЗОВ ФУНКЦИИ КОНТРАКТА
+            const tx = await contract.createCampaign(
+                title,                              // string _title
+                description,                        // string _description
+                imageUrl,                          // string _imageHash
+                Number(category),                  // Category _category
+                parseEther(goal),                  // uint256 _goalAmount
+                Number(durationDays),              // uint256 _durationDays
+                parseEther(minDonation)            // uint256 _minDonation
             );
 
             console.log('Транзакция отправлена:', tx.hash);
@@ -167,7 +92,16 @@ function CreateCampaign() {
             navigate('/');
         } catch (err: any) {
             console.error('Ошибка создания кампании:', err);
-            setError(err.message || 'Ошибка создания кампании');
+
+            // Более детальная обработка ошибок
+            let errorMessage = 'Ошибка создания кампании';
+            if (err.reason) {
+                errorMessage = err.reason;
+            } else if (err.message) {
+                errorMessage = err.message;
+            }
+
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -190,8 +124,6 @@ function CreateCampaign() {
             </div>
         );
     }
-
-    const totalPercentage = milestones.reduce((sum, m) => sum + Number(m.percentage), 0);
 
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12">
@@ -287,7 +219,7 @@ function CreateCampaign() {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                                     <Tag className="w-4 h-4" />
-                                    Категория
+                                    Категория *
                                 </label>
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                                     {Object.entries(CATEGORY_NAMES).map(([key, value]) => (
@@ -307,12 +239,12 @@ function CreateCampaign() {
                                 </div>
                             </div>
 
-                            {/* Цель и дедлайн */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Параметры финансирования */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                         <Target className="w-4 h-4" />
-                                        Цель сбора (ETH) *
+                                        Цель (ETH) *
                                     </label>
                                     <Input
                                         type="number"
@@ -329,13 +261,30 @@ function CreateCampaign() {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                         <Calendar className="w-4 h-4" />
-                                        Дедлайн *
+                                        Длительность (дней) *
                                     </label>
                                     <Input
-                                        type="date"
-                                        value={deadline}
-                                        onChange={(e) => setDeadline(e.target.value)}
-                                        min={new Date().toISOString().split('T')[0]}
+                                        type="number"
+                                        value={durationDays}
+                                        onChange={(e) => setDurationDays(e.target.value)}
+                                        placeholder="30"
+                                        min="1"
+                                        max="365"
+                                        required
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                                        Мин. донат (ETH) *
+                                    </label>
+                                    <Input
+                                        type="number"
+                                        step="0.001"
+                                        value={minDonation}
+                                        onChange={(e) => setMinDonation(e.target.value)}
+                                        placeholder="0.001"
+                                        min="0.001"
                                         required
                                     />
                                 </div>
@@ -343,150 +292,24 @@ function CreateCampaign() {
                         </CardContent>
                     </Card>
 
-                    {/* Milestones */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Этапы проекта (Milestones)</CardTitle>
-                            <CardDescription>
-                                Milestone 0 (стартовый капитал) выводится автоматически.
-                                Остальные этапы требуют одобрения доноров. Сумма процентов должна быть 100%.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            {milestones.map((milestone, index) => (
-                                <div key={index} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <Badge variant={index === 0 ? "default" : "secondary"}>
-                                            Milestone {index} {index === 0 && '(Автоматический)'}
-                                        </Badge>
-                                        {index > 0 && (
-                                            <button
-                                                type="button"
-                                                onClick={() => removeMilestone(index)}
-                                                className="text-red-600 hover:text-red-800 p-1"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        )}
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        <Input
-                                            type="text"
-                                            value={milestone.description}
-                                            onChange={(e) => updateMilestone(index, 'description', e.target.value)}
-                                            placeholder="Описание этапа"
-                                            disabled={index === 0}
-                                            required
-                                        />
-
-                                        <div>
-                                            <label className="block text-sm text-gray-600 mb-1">
-                                                Процент от цели: {milestone.percentage}%
-                                            </label>
-                                            <input
-                                                type="range"
-                                                min="0"
-                                                max="100"
-                                                value={milestone.percentage}
-                                                onChange={(e) => updateMilestone(index, 'percentage', Number(e.target.value))}
-                                                className="w-full"
-                                            />
-                                        </div>
-                                    </div>
+                    {/* Информационное сообщение */}
+                    <Card className="bg-blue-50 border-blue-200">
+                        <CardContent className="pt-6">
+                            <div className="flex items-start gap-3">
+                                <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                                <div className="text-sm text-blue-800">
+                                    <p className="font-medium mb-1">Важная информация:</p>
+                                    <ul className="list-disc list-inside space-y-1">
+                                        <li>Milestones и rewards можно добавить позже через отдельные функции контракта</li>
+                                        <li>После создания кампанию нельзя будет удалить</li>
+                                        <li>Убедитесь, что все данные указаны корректно</li>
+                                    </ul>
                                 </div>
-                            ))}
-
-                            <div className="flex items-center justify-between pt-2">
-                                <div className={`text-sm font-medium ${totalPercentage === 100 ? 'text-green-600' : 'text-red-600'}`}>
-                                    Итого: {totalPercentage}% {totalPercentage === 100 ? '✓' : '(должно быть 100%)'}
-                                </div>
-                                <Button
-                                    type="button"
-                                    onClick={addMilestone}
-                                    variant="outline"
-                                    size="sm"
-                                >
-                                    <Plus className="w-4 h-4 mr-1" />
-                                    Добавить этап
-                                </Button>
                             </div>
                         </CardContent>
                     </Card>
 
-                    {/* Rewards */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Награды (опционально)</CardTitle>
-                            <CardDescription>
-                                Предложите награды для доноров разных уровней
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            {rewards.map((reward, index) => (
-                                <div key={index} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <Badge>Награда {index + 1}</Badge>
-                                        <button
-                                            type="button"
-                                            onClick={() => removeReward(index)}
-                                            className="text-red-600 hover:text-red-800 p-1"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </button>
-                                    </div>
-
-                                    <div className="space-y-3">
-                                        <Input
-                                            type="text"
-                                            value={reward.title}
-                                            onChange={(e) => updateReward(index, 'title', e.target.value)}
-                                            placeholder="Название награды"
-                                            required
-                                        />
-
-                                        <Input
-                                            type="text"
-                                            value={reward.description}
-                                            onChange={(e) => updateReward(index, 'description', e.target.value)}
-                                            placeholder="Описание награды"
-                                            required
-                                        />
-
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <Input
-                                                type="number"
-                                                step="0.001"
-                                                value={reward.minDonation}
-                                                onChange={(e) => updateReward(index, 'minDonation', e.target.value)}
-                                                placeholder="Мин. донат (ETH)"
-                                                required
-                                            />
-
-                                            <Input
-                                                type="number"
-                                                value={reward.quantity}
-                                                onChange={(e) => updateReward(index, 'quantity', Number(e.target.value))}
-                                                placeholder="Количество (0 = неограничено)"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-
-                            <Button
-                                type="button"
-                                onClick={addReward}
-                                variant="outline"
-                                className="w-full"
-                            >
-                                <Plus className="w-4 h-4 mr-2" />
-                                Добавить награду
-                            </Button>
-                        </CardContent>
-                    </Card>
-
-                    {/* Кнопка отправки */}
+                    {/* Кнопки */}
                     <div className="flex gap-4">
                         <Button
                             type="button"
@@ -499,8 +322,7 @@ function CreateCampaign() {
                         </Button>
                         <Button
                             type="submit"
-                            variant="ghost"
-                            className="flex-1"
+                            className="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
                             disabled={loading}
                         >
                             {loading ? (
