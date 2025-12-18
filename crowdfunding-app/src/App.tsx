@@ -7,6 +7,7 @@ import Explore from './pages/Explore';
 import CreateCampaign from './pages/CreateCampaign';
 import CampaignDetails from './pages/CampaignDetails';
 import MyCampaigns from './pages/MyCampaigns';
+import CampaignDashboard from './pages/CampaignDashboard';
 
 function App() {
     return (
@@ -20,6 +21,7 @@ function App() {
                             <Route path="/explore" element={<Explore />} />
                             <Route path="/create" element={<CreateCampaign />} />
                             <Route path="/campaign/:id" element={<CampaignDetails />} />
+                            <Route path="/campaign/:id/dashboard" element={<CampaignDashboard />} />
                             <Route path="/my-campaigns" element={<MyCampaigns />} />
                         </Routes>
                     </main>

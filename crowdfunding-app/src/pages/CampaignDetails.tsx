@@ -12,17 +12,16 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader} from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
+import { Settings } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import {
     ArrowLeft,
     Loader2,
     Users,
     Clock,
-    Target,
     TrendingUp,
     CheckCircle,
     XCircle,
-    Calendar,
     User,
     Star,
     Gift,
@@ -141,6 +140,20 @@ function CampaignDetails() {
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Назад
                 </Button>
+
+
+                {isCreator && (
+                    <div className="mb-6">
+                        <Button
+                            onClick={() => navigate(`/campaign/${campaignId}/dashboard`)}
+                            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                        >
+                            <Settings className="w-4 h-4 mr-2" />
+                            Управление кампанией
+                        </Button>
+                    </div>
+                )}
+
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Левая колонка - основная информация */}
@@ -364,3 +377,4 @@ function CampaignDetails() {
 }
 
 export default CampaignDetails;
+

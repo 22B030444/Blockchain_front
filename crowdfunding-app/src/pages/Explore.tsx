@@ -23,12 +23,13 @@ function Explore() {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState<SortOption>('newest');
     const [showFilters, setShowFilters] = useState(false);
+    // @ts-ignore
     const [statusFilter, setStatusFilter] = useState<CampaignState | null>(null);
 
-    // Фильтрация
+
     let filteredCampaigns = campaigns;
 
-    // По категории
+
     if (selectedCategory !== null) {
         filteredCampaigns = filteredCampaigns.filter(
             campaign => campaign.category === selectedCategory
