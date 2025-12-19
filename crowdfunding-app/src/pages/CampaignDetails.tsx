@@ -7,25 +7,26 @@ import { CampaignState, CATEGORY_NAMES } from '../types/campaign';
 import DonateForm from '../components/campaigns/DonateForm';
 import MilestonesList from '../components/milestones/MilestonesList';
 import RewardsList from '../components/rewards/RewardsList';
+import AddReview from '../components/reviews/AddReview';
+import ReviewsList from '../components/reviews/ReviewsList';
 import { formatEther, formatDate, getDaysRemaining, getProgressPercentage, formatAddress } from '../utils/formatters';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader} from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Progress } from '../components/ui/progress';
-import { Settings } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import {
     ArrowLeft,
     Loader2,
     Users,
     Clock,
-    TrendingUp,
     CheckCircle,
     XCircle,
     User,
     Star,
     Gift,
-    Flag
+    Flag,
+    Settings
 } from 'lucide-react';
 
 function CampaignDetails() {
@@ -37,13 +38,14 @@ function CampaignDetails() {
 
     const [userDonation, setUserDonation] = useState<bigint>(0n);
     const [isDonor, setIsDonor] = useState(false);
+    const [hasReviewed, setHasReviewed] = useState(false);
 
+    // Загрузка информации о донате пользователя
     useEffect(() => {
         const fetchUserDonation = async () => {
             if (!contract || !account || !campaign) return;
 
             try {
-                // ПРАВИЛЬНАЯ ФУНКЦИЯ: getDonorContribution
                 const donation = await contract.getDonorContribution(campaignId, account);
                 setUserDonation(donation);
                 setIsDonor(donation > 0n);
@@ -53,6 +55,22 @@ function CampaignDetails() {
         };
 
         fetchUserDonation();
+    }, [contract, account, campaignId, campaign]);
+
+    // Проверка, оставлял ли пользователь отзыв
+    useEffect(() => {
+        const checkReview = async () => {
+            if (!contract || !account || !campaign) return;
+
+            try {
+                const reviewed = await contract.hasReviewed(campaignId, account);
+                setHasReviewed(reviewed);
+            } catch (err) {
+                console.error('Ошибка проверки отзыва:', err);
+            }
+        };
+
+        checkReview();
     }, [contract, account, campaignId, campaign]);
 
     const handleRefresh = () => {
@@ -105,7 +123,6 @@ function CampaignDetails() {
             case CampaignState.Successful:
                 return (
                     <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100 text-base px-4 py-1">
-                        <TrendingUp className="w-4 h-4 mr-1" />
                         Успешно завершена
                     </Badge>
                 );
@@ -141,19 +158,16 @@ function CampaignDetails() {
                     Назад
                 </Button>
 
-
+                {/* Кнопка управления для создателя */}
                 {isCreator && (
-                    <div className="mb-6">
-                        <Button
-                            onClick={() => navigate(`/campaign/${campaignId}/dashboard`)}
-                            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                        >
-                            <Settings className="w-4 h-4 mr-2" />
-                            Управление кампанией
-                        </Button>
-                    </div>
+                    <Button
+                        onClick={() => navigate(`/campaign/${campaignId}/dashboard`)}
+                        className="mb-6 ml-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    >
+                        <Settings className="w-4 h-4 mr-2" />
+                        Управление кампанией
+                    </Button>
                 )}
-
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Левая колонка - основная информация */}
@@ -219,7 +233,7 @@ function CampaignDetails() {
                                 </div>
 
                                 {/* Статистика */}
-                                <div className="grid grid-cols-2 gap-4 pt-6 border-t">
+                                <div className="grid grid-cols-3 gap-4 pt-6 border-t">
                                     <div className="flex items-center gap-3">
                                         <div className="p-3 bg-indigo-50 rounded-lg">
                                             <Users className="w-5 h-5 text-indigo-600" />
@@ -240,11 +254,23 @@ function CampaignDetails() {
                                             </div>
                                             <div className="text-lg font-semibold">
                                                 {isActive && daysLeft > 0
-                                                    ? `${daysLeft} ${daysLeft === 1 ? 'день' : 'дней'}`
+                                                    ? `${daysLeft} дн.`
                                                     : formatDate(campaign.deadline)}
                                             </div>
                                         </div>
                                     </div>
+
+                                    {campaign.averageRating > 0 && (
+                                        <div className="flex items-center gap-3">
+                                            <div className="p-3 bg-yellow-50 rounded-lg">
+                                                <Star className="w-5 h-5 text-yellow-600" />
+                                            </div>
+                                            <div>
+                                                <div className="text-sm text-gray-600">Рейтинг</div>
+                                                <div className="text-lg font-semibold">{campaign.averageRating.toFixed(1)} ⭐</div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Ваш донат */}
@@ -322,38 +348,19 @@ function CampaignDetails() {
                                     </TabsContent>
 
                                     <TabsContent value="reviews" className="mt-0">
-                                        {campaign.reviews && campaign.reviews.length > 0 ? (
-                                            <div className="space-y-4">
-                                                {campaign.reviews.map((review, index) => (
-                                                    <div key={index} className="p-4 bg-gray-50 rounded-lg border">
-                                                        <div className="flex items-center justify-between mb-2">
-                                                            <span className="font-medium">{formatAddress(review.reviewer)}</span>
-                                                            <div className="flex items-center gap-1">
-                                                                {Array.from({ length: 5 }).map((_, i) => (
-                                                                    <Star
-                                                                        key={i}
-                                                                        className={`w-4 h-4 ${
-                                                                            i < review.rating
-                                                                                ? 'fill-yellow-400 text-yellow-400'
-                                                                                : 'text-gray-300'
-                                                                        }`}
-                                                                    />
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                        <p className="text-gray-700 text-sm">{review.comment}</p>
-                                                        <p className="text-xs text-gray-500 mt-2">
-                                                            {formatDate(review.timestamp)}
-                                                        </p>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ) : (
-                                            <div className="text-center py-12 text-gray-500">
-                                                <Star className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                                                <p>Отзывов пока нет</p>
-                                            </div>
-                                        )}
+                                        <div className="space-y-6">
+                                            {/* Форма добавления отзыва */}
+                                            <AddReview
+                                                campaignId={campaignId}
+                                                campaign={campaign}
+                                                isDonor={isDonor}
+                                                hasReviewed={hasReviewed}
+                                                onSuccess={handleRefresh}
+                                            />
+
+                                            {/* Список отзывов */}
+                                            <ReviewsList reviews={campaign.reviews || []} />
+                                        </div>
                                     </TabsContent>
                                 </CardContent>
                             </Tabs>
@@ -377,4 +384,3 @@ function CampaignDetails() {
 }
 
 export default CampaignDetails;
-

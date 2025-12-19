@@ -1,4 +1,4 @@
-// pages/CampaignDashboard.tsx
+
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useWeb3 } from '../contexts/Web3Context';
@@ -8,7 +8,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { AlertCircle, Plus, Trash2, Loader2, Flag, Gift, ArrowLeft, DollarSign } from 'lucide-react';
+import { AlertCircle, Plus, Loader2, Flag, Gift, ArrowLeft} from 'lucide-react';
 
 interface MilestoneForm {
     title: string;
@@ -30,7 +30,6 @@ function CampaignDashboard() {
     const campaignId = Number(id);
     const { campaign, loading: campaignLoading } = useCampaign(campaignId);
 
-    // Milestones
     const [milestones, setMilestones] = useState<MilestoneForm[]>([]);
     const [newMilestone, setNewMilestone] = useState<MilestoneForm>({
         title: '',
@@ -39,7 +38,6 @@ function CampaignDashboard() {
         durationDays: 30
     });
 
-    // Rewards
     const [rewards, setRewards] = useState<RewardForm[]>([]);
     const [newReward, setNewReward] = useState<RewardForm>({
         minAmount: '',
@@ -51,7 +49,6 @@ function CampaignDashboard() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    // Проверка прав доступа
     const isCreator = account?.toLowerCase() === campaign?.creator.toLowerCase();
 
     useEffect(() => {
@@ -60,14 +57,13 @@ function CampaignDashboard() {
         }
     }, [campaign, isCreator, campaignId, navigate]);
 
-    // Добавление Milestone
+
     const handleAddMilestone = async () => {
         if (!contract || !campaign) return;
 
         setError(null);
         setSuccess(null);
 
-        // Валидация
         if (!newMilestone.title.trim()) {
             setError('Укажите название этапа');
             return;
@@ -77,7 +73,6 @@ function CampaignDashboard() {
             return;
         }
 
-        // Проверка суммы процентов
         const existingMilestones = campaign.milestones || [];
         const totalPercentage = existingMilestones.reduce((sum, m) => sum + m.percentage, 0) + newMilestone.percentage;
 
