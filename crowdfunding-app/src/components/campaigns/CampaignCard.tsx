@@ -1,4 +1,3 @@
-// components/campaigns/CampaignCard.tsx
 import { useNavigate } from 'react-router-dom';
 import { Campaign, CATEGORY_NAMES} from '../../types/campaign';
 
@@ -32,10 +31,10 @@ function CampaignCard({ campaign, showManageButton = false }: CampaignCardProps)
     };
 
     const stateNames: Record<number, string> = {
-        0: 'Активна',
-        1: 'Успешна',
-        2: 'Провалена',
-        3: 'Завершена'
+        0: 'Active',
+        1: 'Successful',
+        2: 'Failed',
+        3: 'Finished'
     };
 
     const handleManageClick = (e: React.MouseEvent) => {
@@ -43,6 +42,7 @@ function CampaignCard({ campaign, showManageButton = false }: CampaignCardProps)
         navigate(`/campaign/${campaign.id}/dashboard`);
     };
 
+    // @ts-ignore
     // @ts-ignore
     // @ts-ignore
     return (
@@ -67,7 +67,7 @@ function CampaignCard({ campaign, showManageButton = false }: CampaignCardProps)
                 </div>
                 <div className="absolute top-3 right-3">
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${stateColors[campaign.state] || 'bg-gray-100 text-gray-800'}`}>
-                        {stateNames[campaign.state] || 'Неизвестно'}
+                        {stateNames[campaign.state] || 'Unknown'}
                     </span>
                 </div>
             </div>
@@ -114,10 +114,10 @@ function CampaignCard({ campaign, showManageButton = false }: CampaignCardProps)
                             onClick={handleManageClick}
                             variant="outlined"
                             className="w-full"
-                            size="sm"
+                            size="small"
                         >
                             <Settings className="w-4 h-4 mr-2" />
-                            Управление
+                            Manage
                         </Button>
                     </div>
                 )}
@@ -130,7 +130,7 @@ function CampaignCard({ campaign, showManageButton = false }: CampaignCardProps)
                     </div>
                     <div className="flex items-center gap-1">
                         <Clock className="w-4 h-4" />
-                        <span>{daysLeft > 0 ? `${daysLeft}д` : 'Завершена'}</span>
+                        <span>{daysLeft > 0 ? `${daysLeft}д` : 'Finished'}</span>
                     </div>
                     {campaign.averageRating > 0 && (
                         <div className="flex items-center gap-1">

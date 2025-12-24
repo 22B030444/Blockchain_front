@@ -27,18 +27,18 @@ function DonateForm({ campaignId, campaign, onSuccess }: DonateFormProps) {
         e.preventDefault();
 
         if (!contract || !account) {
-            setError('Подключите кошелек');
+            setError('Connect wallet');
             return;
         }
 
         if (!isValidAmount(amount)) {
-            setError('Укажите корректную сумму');
+            setError('Please enter the correct amount');
             return;
         }
 
         const donationValue = parseFloat(amount);
         if (donationValue <= 0 || donationValue > 100) {
-            setError('Сумма доната должна быть от 0.001 до 100 ETH');
+            setError('The donation amount must be from 0.001 to 100 ETH');
             return;
         }
 
@@ -50,15 +50,15 @@ function DonateForm({ campaignId, campaign, onSuccess }: DonateFormProps) {
                 value: parseEther(amount)
             });
 
-            console.log('Транзакция отправлена:', tx.hash);
+            console.log('Transaction sent:', tx.hash);
             await tx.wait();
-            console.log('Донат успешен!');
+            console.log('Donation successful!');
 
             setAmount('');
             onSuccess();
         } catch (err: any) {
-            console.error('Ошибка доната:', err);
-            setError(err.message || 'Ошибка при отправке доната');
+            console.error('Donation error:', err);
+            setError(err.message || 'Error sending donation');
         } finally {
             setLoading(false);
         }
@@ -72,7 +72,7 @@ function DonateForm({ campaignId, campaign, onSuccess }: DonateFormProps) {
                         <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <Wallet className="w-8 h-8 text-indigo-600" />
                         </div>
-                        <h3 className="text-lg font-semibold mb-2">Требуется подключение</h3>
+                        <h3 className="text-lg font-semibold mb-2">Connection required</h3>
                         <p className="text-sm text-gray-600">
                             Подключите кошелек для поддержки проекта
                         </p>

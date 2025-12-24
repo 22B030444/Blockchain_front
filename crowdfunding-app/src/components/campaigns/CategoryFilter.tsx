@@ -15,7 +15,7 @@ function CategoryFilter({ selectedCategory, onSelectCategory }: CategoryFilterPr
 
     return (
         <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Фильтр по категориям</h3>
+            <h3 className="text-lg font-semibold text-gray-900">Filter by category</h3>
             <div className="flex flex-wrap gap-3">
                 <Button
                     onClick={() => onSelectCategory(null)}
@@ -26,7 +26,7 @@ function CategoryFilter({ selectedCategory, onSelectCategory }: CategoryFilterPr
                             : 'hover:border-indigo-600 hover:text-indigo-600'
                     }`}
                 >
-                    Все
+                    All
                 </Button>
 
                 {categories.map((category) => (
