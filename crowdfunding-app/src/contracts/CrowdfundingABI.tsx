@@ -84,6 +84,11 @@ export const CROWDFUNDING_ABI = [
         "type": "function"
     },
     {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
         "anonymous": false,
         "inputs": [
             {
@@ -131,7 +136,7 @@ export const CROWDFUNDING_ABI = [
             },
             {
                 "indexed": false,
-                "internalType": "enum Crowdfunding.CampaignStatus",
+                "internalType": "enum CrowdfundingTypes.CampaignStatus",
                 "name": "status",
                 "type": "uint8"
             }
@@ -157,7 +162,7 @@ export const CROWDFUNDING_ABI = [
                 "type": "string"
             },
             {
-                "internalType": "enum Crowdfunding.Category",
+                "internalType": "enum CrowdfundingTypes.Category",
                 "name": "_category",
                 "type": "uint8"
             },
@@ -726,7 +731,7 @@ export const CROWDFUNDING_ABI = [
                 "type": "string"
             },
             {
-                "internalType": "enum Crowdfunding.Category",
+                "internalType": "enum CrowdfundingTypes.Category",
                 "name": "category",
                 "type": "uint8"
             },
@@ -751,7 +756,7 @@ export const CROWDFUNDING_ABI = [
                 "type": "uint256"
             },
             {
-                "internalType": "enum Crowdfunding.CampaignStatus",
+                "internalType": "enum CrowdfundingTypes.CampaignStatus",
                 "name": "status",
                 "type": "uint8"
             },
@@ -830,7 +835,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "string"
                     },
                     {
-                        "internalType": "enum Crowdfunding.Category",
+                        "internalType": "enum CrowdfundingTypes.Category",
                         "name": "category",
                         "type": "uint8"
                     },
@@ -855,7 +860,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "uint256"
                     },
                     {
-                        "internalType": "enum Crowdfunding.CampaignStatus",
+                        "internalType": "enum CrowdfundingTypes.CampaignStatus",
                         "name": "status",
                         "type": "uint8"
                     },
@@ -875,7 +880,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "uint256"
                     }
                 ],
-                "internalType": "struct Crowdfunding.Campaign[]",
+                "internalType": "struct CrowdfundingTypes.Campaign[]",
                 "name": "",
                 "type": "tuple[]"
             }
@@ -940,7 +945,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "string"
                     },
                     {
-                        "internalType": "enum Crowdfunding.Category",
+                        "internalType": "enum CrowdfundingTypes.Category",
                         "name": "category",
                         "type": "uint8"
                     },
@@ -965,7 +970,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "uint256"
                     },
                     {
-                        "internalType": "enum Crowdfunding.CampaignStatus",
+                        "internalType": "enum CrowdfundingTypes.CampaignStatus",
                         "name": "status",
                         "type": "uint8"
                     },
@@ -985,7 +990,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "uint256"
                     }
                 ],
-                "internalType": "struct Crowdfunding.Campaign",
+                "internalType": "struct CrowdfundingTypes.Campaign",
                 "name": "",
                 "type": "tuple"
             }
@@ -1021,7 +1026,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "uint256"
                     }
                 ],
-                "internalType": "struct Crowdfunding.Donation[]",
+                "internalType": "struct CrowdfundingTypes.Donation[]",
                 "name": "",
                 "type": "tuple[]"
             }
@@ -1082,7 +1087,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "uint256"
                     }
                 ],
-                "internalType": "struct Crowdfunding.Milestone[]",
+                "internalType": "struct CrowdfundingTypes.Milestone[]",
                 "name": "",
                 "type": "tuple[]"
             }
@@ -1123,7 +1128,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "uint256"
                     }
                 ],
-                "internalType": "struct Crowdfunding.Review[]",
+                "internalType": "struct CrowdfundingTypes.Review[]",
                 "name": "",
                 "type": "tuple[]"
             }
@@ -1164,7 +1169,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "uint256"
                     }
                 ],
-                "internalType": "struct Crowdfunding.Reward[]",
+                "internalType": "struct CrowdfundingTypes.Reward[]",
                 "name": "",
                 "type": "tuple[]"
             }
@@ -1175,7 +1180,7 @@ export const CROWDFUNDING_ABI = [
     {
         "inputs": [
             {
-                "internalType": "enum Crowdfunding.Category",
+                "internalType": "enum CrowdfundingTypes.Category",
                 "name": "_category",
                 "type": "uint8"
             }
@@ -1210,7 +1215,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "string"
                     },
                     {
-                        "internalType": "enum Crowdfunding.Category",
+                        "internalType": "enum CrowdfundingTypes.Category",
                         "name": "category",
                         "type": "uint8"
                     },
@@ -1235,7 +1240,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "uint256"
                     },
                     {
-                        "internalType": "enum Crowdfunding.CampaignStatus",
+                        "internalType": "enum CrowdfundingTypes.CampaignStatus",
                         "name": "status",
                         "type": "uint8"
                     },
@@ -1255,7 +1260,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "uint256"
                     }
                 ],
-                "internalType": "struct Crowdfunding.Campaign[]",
+                "internalType": "struct CrowdfundingTypes.Campaign[]",
                 "name": "",
                 "type": "tuple[]"
             }
@@ -1266,7 +1271,7 @@ export const CROWDFUNDING_ABI = [
     {
         "inputs": [
             {
-                "internalType": "enum Crowdfunding.Category",
+                "internalType": "enum CrowdfundingTypes.Category",
                 "name": "_category",
                 "type": "uint8"
             }
@@ -1382,7 +1387,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "string"
                     },
                     {
-                        "internalType": "enum Crowdfunding.Category",
+                        "internalType": "enum CrowdfundingTypes.Category",
                         "name": "category",
                         "type": "uint8"
                     },
@@ -1407,7 +1412,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "uint256"
                     },
                     {
-                        "internalType": "enum Crowdfunding.CampaignStatus",
+                        "internalType": "enum CrowdfundingTypes.CampaignStatus",
                         "name": "status",
                         "type": "uint8"
                     },
@@ -1427,7 +1432,7 @@ export const CROWDFUNDING_ABI = [
                         "type": "uint256"
                     }
                 ],
-                "internalType": "struct Crowdfunding.Campaign[]",
+                "internalType": "struct CrowdfundingTypes.Campaign[]",
                 "name": "",
                 "type": "tuple[]"
             }
@@ -1530,4 +1535,5 @@ export const CROWDFUNDING_ABI = [
 ]
 
 
-export const CONTRACT_ADDRESS = "0x5bEfD4E1d52F69e848c6bf6Bf50D9c4289eba95D";
+
+export const CONTRACT_ADDRESS = "0xD66e2499008628a2d3c70EF75114bf91A4902AD2";
