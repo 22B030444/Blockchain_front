@@ -50,7 +50,7 @@ function CampaignDetails() {
                 setUserDonation(donation);
                 setIsDonor(donation > 0n);
             } catch (err) {
-                console.error('Ошибка загрузки доната:', err);
+                console.error('Error loading donation:', err);
             }
         };
 
@@ -66,7 +66,7 @@ function CampaignDetails() {
                 const reviewed = await contract.hasReviewed(campaignId, account);
                 setHasReviewed(reviewed);
             } catch (err) {
-                console.error('Ошибка проверки отзыва:', err);
+                console.error('Review verification error:', err);
             }
         };
 
@@ -82,7 +82,7 @@ function CampaignDetails() {
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="text-center">
                     <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mx-auto mb-4" />
-                    <h2 className="text-2xl font-semibold text-gray-700">Загрузка кампании...</h2>
+                    <h2 className="text-2xl font-semibold text-gray-700">Loading campaign...</h2>
                 </div>
             </div>
         );
@@ -94,11 +94,11 @@ function CampaignDetails() {
                 <Card className="max-w-md w-full">
                     <CardContent className="pt-6 text-center">
                         <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-                        <h2 className="text-2xl font-bold mb-2">Кампания не найдена</h2>
-                        <p className="text-gray-600 mb-6">Эта кампания не существует или была удалена</p>
+                        <h2 className="text-2xl font-bold mb-2">Campaign not found</h2>
+                        <p className="text-gray-600 mb-6">This campaign does not exist or has been deleted.</p>
                         <Button onClick={() => navigate('/')} variant="ghost">
                             <ArrowLeft className="w-4 h-4 mr-2" />
-                            Вернуться на главную
+                            Return to home page
                         </Button>
                     </CardContent>
                 </Card>
@@ -117,31 +117,31 @@ function CampaignDetails() {
                 return (
                     <Badge className="bg-green-100 text-green-800 hover:bg-green-100 text-base px-4 py-1">
                         <CheckCircle className="w-4 h-4 mr-1" />
-                        Активна
+                        Active
                     </Badge>
                 );
             case CampaignState.Successful:
                 return (
                     <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100 text-base px-4 py-1">
-                        Успешно завершена
+                        Successfully completed
                     </Badge>
                 );
             case CampaignState.Failed:
                 return (
                     <Badge variant="destructive" className="text-base px-4 py-1">
                         <XCircle className="w-4 h-4 mr-1" />
-                        Провалена
+                        Failed
                     </Badge>
                 );
             case CampaignState.Completed:
                 return (
                     <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 text-base px-4 py-1">
                         <CheckCircle className="w-4 h-4 mr-1" />
-                        Завершена
+                        Finished
                     </Badge>
                 );
             default:
-                return <Badge variant="secondary">Неизвестно</Badge>;
+                return <Badge variant="secondary">Unknown</Badge>;
         }
     };
 
@@ -155,7 +155,7 @@ function CampaignDetails() {
                     className="mb-6"
                 >
                     <ArrowLeft className="w-4 h-4 mr-2" />
-                    Назад
+                    Back
                 </Button>
 
                 {/* Кнопка управления для создателя */}
@@ -165,7 +165,7 @@ function CampaignDetails() {
                         className="mb-6 ml-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                     >
                         <Settings className="w-4 h-4 mr-2" />
-                        Управление кампанией
+                        Campaign Management
                     </Button>
                 )}
 
@@ -199,10 +199,10 @@ function CampaignDetails() {
                                 <div className="flex items-center gap-4 text-sm text-gray-600 mb-6">
                                     <div className="flex items-center gap-1">
                                         <User className="w-4 h-4" />
-                                        <span>Создатель: {formatAddress(campaign.creator)}</span>
+                                        <span>Creator: {formatAddress(campaign.creator)}</span>
                                     </div>
                                     {isCreator && (
-                                        <Badge variant="secondary">Ваша кампания</Badge>
+                                        <Badge variant="secondary">Your campaign</Badge>
                                     )}
                                 </div>
 
@@ -215,19 +215,19 @@ function CampaignDetails() {
                                             <div className="text-2xl font-bold text-indigo-600">
                                                 {formatEther(campaign.amountCollected)}
                                             </div>
-                                            <div className="text-sm text-gray-600">ETH собрано</div>
+                                            <div className="text-sm text-gray-600">ETH collected</div>
                                         </div>
                                         <div>
                                             <div className="text-2xl font-bold text-gray-900">
                                                 {progress}%
                                             </div>
-                                            <div className="text-sm text-gray-600">от цели</div>
+                                            <div className="text-sm text-gray-600">from the target</div>
                                         </div>
                                         <div>
                                             <div className="text-2xl font-bold text-gray-900">
                                                 {formatEther(campaign.goal)}
                                             </div>
-                                            <div className="text-sm text-gray-600">ETH цель</div>
+                                            <div className="text-sm text-gray-600">ETH target</div>
                                         </div>
                                     </div>
                                 </div>
@@ -239,7 +239,7 @@ function CampaignDetails() {
                                             <Users className="w-5 h-5 text-indigo-600" />
                                         </div>
                                         <div>
-                                            <div className="text-sm text-gray-600">Доноров</div>
+                                            <div className="text-sm text-gray-600">Donors</div>
                                             <div className="text-lg font-semibold">{campaign.donorsCount}</div>
                                         </div>
                                     </div>
@@ -266,7 +266,7 @@ function CampaignDetails() {
                                                 <Star className="w-5 h-5 text-yellow-600" />
                                             </div>
                                             <div>
-                                                <div className="text-sm text-gray-600">Рейтинг</div>
+                                                <div className="text-sm text-gray-600">Rating</div>
                                                 <div className="text-lg font-semibold">{campaign.averageRating.toFixed(1)} ⭐</div>
                                             </div>
                                         </div>
@@ -278,10 +278,10 @@ function CampaignDetails() {
                                     <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                                         <div className="flex items-center gap-2 mb-1">
                                             <CheckCircle className="w-5 h-5 text-green-600" />
-                                            <span className="font-semibold text-green-900">Вы донор этой кампании</span>
+                                            <span className="font-semibold text-green-900">You are a donor to this campaign</span>
                                         </div>
                                         <p className="text-sm text-green-700">
-                                            Ваш вклад: <strong>{formatEther(userDonation)} ETH</strong>
+                                            Your contribution: <strong>{formatEther(userDonation)} ETH</strong>
                                         </p>
                                     </div>
                                 )}
@@ -293,15 +293,15 @@ function CampaignDetails() {
                             <Tabs defaultValue="description" className="w-full">
                                 <CardHeader className="pb-4">
                                     <TabsList className="grid w-full grid-cols-4">
-                                        <TabsTrigger value="description">Описание</TabsTrigger>
+                                        <TabsTrigger value="description">Description</TabsTrigger>
                                         <TabsTrigger value="milestones">
-                                            Этапы ({campaign.milestones?.length || 0})
+                                            Milestones ({campaign.milestones?.length || 0})
                                         </TabsTrigger>
                                         <TabsTrigger value="rewards">
-                                            Награды ({campaign.rewards?.length || 0})
+                                            Rewards ({campaign.rewards?.length || 0})
                                         </TabsTrigger>
                                         <TabsTrigger value="reviews">
-                                            Отзывы ({campaign.reviews?.length || 0})
+                                            Reviews ({campaign.reviews?.length || 0})
                                         </TabsTrigger>
                                     </TabsList>
                                 </CardHeader>
@@ -309,7 +309,7 @@ function CampaignDetails() {
                                 <CardContent>
                                     <TabsContent value="description" className="mt-0">
                                         <div className="prose max-w-none">
-                                            <h3 className="text-lg font-semibold mb-3">О проекте</h3>
+                                            <h3 className="text-lg font-semibold mb-3">About the project</h3>
                                             <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
                                                 {campaign.description}
                                             </p>
@@ -328,7 +328,7 @@ function CampaignDetails() {
                                         ) : (
                                             <div className="text-center py-12 text-gray-500">
                                                 <Flag className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                                                <p>Этапы не указаны</p>
+                                                <p>The stages are not specified</p>
                                             </div>
                                         )}
                                     </TabsContent>
@@ -342,7 +342,7 @@ function CampaignDetails() {
                                         ) : (
                                             <div className="text-center py-12 text-gray-500">
                                                 <Gift className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                                                <p>Награды не предусмотрены</p>
+                                                <p>No rewards are provided</p>
                                             </div>
                                         )}
                                     </TabsContent>

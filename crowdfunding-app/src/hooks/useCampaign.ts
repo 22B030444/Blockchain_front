@@ -18,12 +18,12 @@ export const useCampaign = (campaignId: number) => {
 
             try {
                 setLoading(true);
-                console.log('Загрузка кампании ID:', campaignId);
+                console.log('Loading campaign ID:', campaignId);
 
                 // Проверяем существование кампании
                 const campaignCounter = await contract.campaignCounter();
                 if (campaignId >= Number(campaignCounter)) {
-                    throw new Error('Кампания не существует');
+                    throw new Error('The campaign does not exist');
                 }
 
                 const data = await contract.getCampaign(campaignId);
@@ -74,12 +74,12 @@ export const useCampaign = (campaignId: number) => {
                     averageRating: Number(averageRating)
                 };
 
-                console.log('Кампания загружена:', campaignData);
+                console.log('Campaign loaded:', campaignData);
                 setCampaign(campaignData);
                 setError(null);
             } catch (err) {
-                console.error('Ошибка загрузки кампании:', err);
-                setError('Не удалось загрузить кампанию');
+                console.error('Error loading campaign:', err);
+                setError('Failed to load campaign');
             } finally {
                 setLoading(false);
             }

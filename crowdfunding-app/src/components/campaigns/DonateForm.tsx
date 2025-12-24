@@ -74,7 +74,7 @@ function DonateForm({ campaignId, campaign, onSuccess }: DonateFormProps) {
                         </div>
                         <h3 className="text-lg font-semibold mb-2">Connection required</h3>
                         <p className="text-sm text-gray-600">
-                            Подключите кошелек для поддержки проекта
+                            Connect your wallet to support the project
                         </p>
                     </div>
                 </CardContent>
@@ -90,9 +90,9 @@ function DonateForm({ campaignId, campaign, onSuccess }: DonateFormProps) {
                         <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <CheckCircle className="w-8 h-8 text-gray-600" />
                         </div>
-                        <h3 className="text-lg font-semibold mb-2">Кампания завершена</h3>
+                        <h3 className="text-lg font-semibold mb-2">The campaign is over</h3>
                         <p className="text-sm text-gray-600">
-                            Донаты больше не принимаются
+                            Donations are no longer accepted
                         </p>
                     </div>
                 </CardContent>
@@ -105,10 +105,10 @@ function DonateForm({ campaignId, campaign, onSuccess }: DonateFormProps) {
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <Heart className="w-5 h-5 text-red-500" />
-                    Поддержать проект
+                    Support the project
                 </CardTitle>
                 <CardDescription>
-                    Помогите достичь цели этой кампании
+                    Help achieve the goal of this campaign
                 </CardDescription>
             </CardHeader>
 
@@ -123,7 +123,7 @@ function DonateForm({ campaignId, campaign, onSuccess }: DonateFormProps) {
                 <form onSubmit={handleDonate} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Сумма доната (ETH)
+                            Donation amount (ETH)
                         </label>
                         <div className="relative">
                             <Input
@@ -166,12 +166,12 @@ function DonateForm({ campaignId, campaign, onSuccess }: DonateFormProps) {
                         {loading ? (
                             <>
                                 <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                Отправка...
+                                Sending...
                             </>
                         ) : (
                             <>
                                 <Heart className="w-5 h-5 mr-2" />
-                                Задонатить
+                                Donate
                             </>
                         )}
                     </Button>
@@ -179,7 +179,7 @@ function DonateForm({ campaignId, campaign, onSuccess }: DonateFormProps) {
 
                 <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                     <p className="text-xs text-gray-600 text-center">
-                        Средства будут отправлены через смарт-контракт Ethereum
+                        Funds will be sent via an Ethereum smart contract.
                     </p>
                 </div>
             </CardContent>

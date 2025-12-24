@@ -106,7 +106,7 @@ export function Header() {
                         ) : (
                             <Button onClick={connectWallet} variant="outline">
                                 <Wallet className="w-4 h-4 mr-2" />
-                                Подключить кошелек
+                                Connect a wallet
                             </Button>
                         )}
                     </div>
@@ -137,7 +137,7 @@ export function Header() {
                                         : 'text-gray-700 hover:bg-gray-100'
                                 }`}
                             >
-                                Главная
+                                Home
                             </Link>
                             <Link
                                 to="/explore"
@@ -148,7 +148,7 @@ export function Header() {
                                         : 'text-gray-700 hover:bg-gray-100'
                                 }`}
                             >
-                                Обзор
+                                Explore
                             </Link>
                             {account && (
                                 <Link
@@ -160,7 +160,7 @@ export function Header() {
                                             : 'text-gray-700 hover:bg-gray-100'
                                     }`}
                                 >
-                                    Мои кампании
+                                    My campaigns
                                 </Link>
                             )}
 
@@ -171,7 +171,7 @@ export function Header() {
                                     className="block"
                                 >
                                     <Button variant="ghost" className="w-full">
-                                        Создать кампанию
+                                        Create a campaign
                                     </Button>
                                 </Link>
 
@@ -195,7 +195,7 @@ export function Header() {
                                             className="w-full"
                                         >
                                             <LogOut className="w-4 h-4 mr-2" />
-                                            Отключить
+                                            Disable
                                         </Button>
                                     </div>
                                 ) : (
@@ -208,7 +208,7 @@ export function Header() {
                                         className="w-full"
                                     >
                                         <Wallet className="w-4 h-4 mr-2" />
-                                        Подключить кошелек
+                                        Connect a wallet
                                     </Button>
                                 )}
                             </div>

@@ -1,4 +1,3 @@
-// components/milestones/MilestonesList.tsx
 import { useState } from 'react';
 import { useWeb3 } from '../../contexts/Web3Context';
 import { Milestone } from '../../types/campaign';
@@ -33,8 +32,8 @@ function MilestonesList({ campaignId, milestones, isCreator, isDonor, onUpdate }
 
             onUpdate();
         } catch (err: any) {
-            console.error('Ошибка голосования:', err);
-            setError(err.message || 'Ошибка голосования');
+            console.error('Voting error:', err);
+            setError(err.message || 'Voting error');
         } finally {
             setLoading(null);
         }
@@ -52,8 +51,8 @@ function MilestonesList({ campaignId, milestones, isCreator, isDonor, onUpdate }
 
             onUpdate();
         } catch (err: any) {
-            console.error('Ошибка вывода:', err);
-            setError(err.message || 'Ошибка вывода средств');
+            console.error('Output error:', err);
+            setError(err.message || 'Withdrawal error');
         } finally {
             setLoading(null);
         }
@@ -96,23 +95,23 @@ function MilestonesList({ campaignId, milestones, isCreator, isDonor, onUpdate }
                                 <div className="flex-1">
                                     <div className="flex items-center gap-2 mb-2">
                                         <h3 className="text-lg font-semibold">
-                                            Этап {index}
+                                            Stage {index}
                                         </h3>
                                         {isAutomatic && (
                                             <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-                                                Автоматический
+                                                Auto
                                             </Badge>
                                         )}
                                         {!isAutomatic && milestone.approved && (
                                             <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
                                                 <CheckCircle className="w-3 h-3 mr-1" />
-                                                Одобрен
+                                                Approved
                                             </Badge>
                                         )}
                                         {milestone.completed && (
                                             <Badge className="bg-green-600 text-white hover:bg-green-600">
                                                 <CheckCircle className="w-3 h-3 mr-1" />
-                                                Выведено
+                                                Withdrawn
                                             </Badge>
                                         )}
                                     </div>
@@ -133,14 +132,14 @@ function MilestonesList({ campaignId, milestones, isCreator, isDonor, onUpdate }
                                     <div className="flex justify-between text-sm text-gray-600">
                                         <span className="flex items-center gap-1">
                                             <ThumbsUp className="w-4 h-4 text-green-600" />
-                                            За: {milestone.votesFor}
+                                            For: {milestone.votesFor}
                                         </span>
                                         <span className="flex items-center gap-1">
                                             <ThumbsDown className="w-4 h-4 text-red-600" />
-                                            Против: {milestone.votesAgainst}
+                                            Against: {milestone.votesAgainst}
                                         </span>
                                         <span className="font-medium">
-                                            Одобрение: {approvalRate}%
+                                            Approval: {approvalRate}%
                                         </span>
                                     </div>
 
@@ -163,7 +162,7 @@ function MilestonesList({ campaignId, milestones, isCreator, isDonor, onUpdate }
                                                 ) : (
                                                     <>
                                                         <ThumbsUp className="w-4 h-4 mr-1" />
-                                                        За
+                                                        For
                                                     </>
                                                 )}
                                             </Button>
@@ -178,7 +177,7 @@ function MilestonesList({ campaignId, milestones, isCreator, isDonor, onUpdate }
                                                 ) : (
                                                     <>
                                                         <ThumbsDown className="w-4 h-4 mr-1" />
-                                                        Против
+                                                        Against
                                                     </>
                                                 )}
                                             </Button>
@@ -200,19 +199,19 @@ function MilestonesList({ campaignId, milestones, isCreator, isDonor, onUpdate }
                                             {loading === index ? (
                                                 <>
                                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                    Обработка...
+                                                    Processing...
                                                 </>
                                             ) : (
                                                 <>
                                                     <DollarSign className="w-4 h-4 mr-2" />
-                                                    Вывести средства
+                                                    Withdraw funds
                                                 </>
                                             )}
                                         </Button>
                                     ) : (
                                         <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center gap-2 text-sm text-yellow-800">
                                             <Clock className="w-4 h-4" />
-                                            <span>Ожидание одобрения доноров (требуется 51%)</span>
+                                            <span>Waiting for donor approval (51% required)</span>
                                         </div>
                                     )}
                                 </div>

@@ -86,7 +86,7 @@ function Explore() {
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="text-center">
                     <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mx-auto mb-4" />
-                    <h2 className="text-2xl font-semibold text-gray-700">Загрузка проектов...</h2>
+                    <h2 className="text-2xl font-semibold text-gray-700">Loading projects...</h2>
                 </div>
             </div>
         );
@@ -97,7 +97,7 @@ function Explore() {
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="text-center">
                     <div className="text-red-600 text-6xl mb-4">⚠️</div>
-                    <h2 className="text-2xl font-semibold text-red-600 mb-2">Ошибка загрузки</h2>
+                    <h2 className="text-2xl font-semibold text-red-600 mb-2">Loading error</h2>
                     <p className="text-gray-600">{error}</p>
                 </div>
             </div>
@@ -113,7 +113,7 @@ function Explore() {
                         Обзор проектов
                     </h1>
                     <p className="text-gray-600">
-                        Исследуйте инновационные проекты и поддержите идеи, которые вам нравятся
+                        Explore innovative projects and support ideas you love
                     </p>
                 </div>
 
@@ -125,7 +125,7 @@ function Explore() {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <Input
                                 type="text"
-                                placeholder="Поиск проектов по названию или описанию..."
+                                placeholder="Search projects by title or description..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="pl-10"
@@ -137,7 +137,7 @@ function Explore() {
                             className="relative"
                         >
                             <SlidersHorizontal className="w-5 h-5 mr-2" />
-                            Фильтры
+                            Filters
                             {activeFiltersCount > 0 && (
                                 <span className="absolute -top-2 -right-2 w-5 h-5 bg-indigo-600 text-white text-xs rounded-full flex items-center justify-center">
                                     {activeFiltersCount}
@@ -153,13 +153,13 @@ function Explore() {
                                 {/* Категории */}
                                 <div>
                                     <div className="flex items-center justify-between mb-3">
-                                        <h3 className="font-semibold text-gray-900">Категория</h3>
+                                        <h3 className="font-semibold text-gray-900">Category</h3>
                                         {selectedCategory !== null && (
                                             <button
                                                 onClick={() => setSelectedCategory(null)}
                                                 className="text-sm text-indigo-600 hover:text-indigo-700"
                                             >
-                                                Сбросить
+                                                Reset
                                             </button>
                                         )}
                                     </div>
@@ -172,13 +172,13 @@ function Explore() {
                                 {/* Статус */}
                                 <div>
                                     <div className="flex items-center justify-between mb-3">
-                                        <h3 className="font-semibold text-gray-900">Статус</h3>
+                                        <h3 className="font-semibold text-gray-900">Status</h3>
                                         {statusFilter !== null && (
                                             <button
                                                 onClick={() => setStatusFilter(null)}
                                                 className="text-sm text-indigo-600 hover:text-indigo-700"
                                             >
-                                                Сбросить
+                                                Reset
                                             </button>
                                         )}
                                     </div>
@@ -190,7 +190,7 @@ function Explore() {
                                             )}
                                             className="justify-start"
                                         >
-                                            Активные
+                                            Active
                                         </Button>
                                         <Button
                                             variant={statusFilter === CampaignState.Successful ? "default" : "outline"}
@@ -199,7 +199,7 @@ function Explore() {
                                             )}
                                             className="justify-start"
                                         >
-                                            Успешные
+                                            Successful
                                         </Button>
                                         <Button
                                             variant={statusFilter === CampaignState.Completed ? "default" : "outline"}
@@ -208,7 +208,7 @@ function Explore() {
                                             )}
                                             className="justify-start"
                                         >
-                                            Завершенные
+                                            Finished
                                         </Button>
                                         <Button
                                             variant={statusFilter === CampaignState.Failed ? "default" : "outline"}
@@ -217,7 +217,7 @@ function Explore() {
                                             )}
                                             className="justify-start"
                                         >
-                                            Провалено
+                                            Failed
                                         </Button>
                                     </div>
                                 </div>
@@ -230,7 +230,7 @@ function Explore() {
                                         className="w-full"
                                     >
                                         <X className="w-4 h-4 mr-2" />
-                                        Очистить все фильтры
+                                        Clear all filters
                                     </Button>
                                 )}
                             </div>
@@ -241,19 +241,19 @@ function Explore() {
                 {/* Сортировка и результаты */}
                 <div className="flex items-center justify-between mb-6">
                     <p className="text-gray-600">
-                        Найдено проектов: <strong>{sortedCampaigns.length}</strong>
+                        Projects found: <strong>{sortedCampaigns.length}</strong>
                     </p>
                     <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-600">Сортировка:</span>
+                        <span className="text-sm text-gray-600">Sorting:</span>
                         <select
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value as SortOption)}
                             className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         >
-                            <option value="newest">Сначала новые</option>
-                            <option value="oldest">Сначала старые</option>
-                            <option value="most-funded">Больше всего собрано</option>
-                            <option value="ending-soon">Скоро завершаются</option>
+                            <option value="newest">New ones first</option>
+                            <option value="oldest">First the old ones</option>
+                            <option value="most-funded">The most collected</option>
+                            <option value="ending-soon">Coming soon</option>
                         </select>
                     </div>
                 </div>
@@ -264,14 +264,14 @@ function Explore() {
                         <div className="text-center">
                             <Filter className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                             <h3 className="text-2xl font-semibold text-gray-700 mb-2">
-                                Ничего не найдено
+                                Nothing found
                             </h3>
                             <p className="text-gray-500 mb-6">
-                                Попробуйте изменить параметры поиска или фильтры
+                                Try changing your search parameters or filters.
                             </p>
                             {activeFiltersCount > 0 && (
                                 <Button onClick={clearFilters} variant="outline">
-                                    Очистить фильтры
+                                    Clear filters
                                 </Button>
                             )}
                         </div>

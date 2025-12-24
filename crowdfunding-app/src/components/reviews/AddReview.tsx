@@ -22,7 +22,7 @@ function AddReview({ campaignId, campaign, isDonor, hasReviewed, onSuccess }: Ad
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Проверка: кампания должна быть завершена
+
     const canReview =
         isDonor &&
         !hasReviewed &&
@@ -34,17 +34,17 @@ function AddReview({ campaignId, campaign, isDonor, hasReviewed, onSuccess }: Ad
         e.preventDefault();
 
         if (!contract || !account) {
-            setError('Подключите кошелек');
+            setError('Connect your wallet');
             return;
         }
 
         if (rating === 0) {
-            setError('Выберите оценку');
+            setError('Select a rating');
             return;
         }
 
         if (!comment.trim()) {
-            setError('Напишите комментарий');
+            setError('Write a comment');
             return;
         }
 
@@ -58,16 +58,16 @@ function AddReview({ campaignId, campaign, isDonor, hasReviewed, onSuccess }: Ad
                 comment
             );
 
-            console.log('Транзакция отправлена:', tx.hash);
+            console.log('Transaction sent:', tx.hash);
             await tx.wait();
-            console.log('Отзыв добавлен!');
+            console.log('Review added!');
 
             setRating(0);
             setComment('');
             onSuccess();
         } catch (err: any) {
-            console.error('Ошибка добавления отзыва:', err);
-            setError(err.reason || err.message || 'Ошибка добавления отзыва');
+            console.error('Error adding review:', err);
+            setError(err.reason || err.message || 'Error adding review');
         } finally {
             setLoading(false);
         }
@@ -81,9 +81,9 @@ function AddReview({ campaignId, campaign, isDonor, hasReviewed, onSuccess }: Ad
                         <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <MessageSquare className="w-8 h-8 text-indigo-600" />
                         </div>
-                        <h3 className="text-lg font-semibold mb-2">Требуется подключение</h3>
+                        <h3 className="text-lg font-semibold mb-2">Connection required</h3>
                         <p className="text-sm text-gray-600">
-                            Подключите кошелек для оставления отзыва
+                            Connect your wallet to leave a review
                         </p>
                     </div>
                 </CardContent>
@@ -100,9 +100,9 @@ function AddReview({ campaignId, campaign, isDonor, hasReviewed, onSuccess }: Ad
                             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <MessageSquare className="w-8 h-8 text-green-600" />
                             </div>
-                            <h3 className="text-lg font-semibold mb-2">Вы уже оставили отзыв</h3>
+                            <h3 className="text-lg font-semibold mb-2">You have already left a review</h3>
                             <p className="text-sm text-gray-600">
-                                Спасибо за ваше мнение!
+                                Thank you for your opinion!
                             </p>
                         </div>
                     </CardContent>
@@ -118,9 +118,9 @@ function AddReview({ campaignId, campaign, isDonor, hasReviewed, onSuccess }: Ad
                             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <MessageSquare className="w-8 h-8 text-gray-600" />
                             </div>
-                            <h3 className="text-lg font-semibold mb-2">Только для доноров</h3>
+                            <h3 className="text-lg font-semibold mb-2">For donors only</h3>
                             <p className="text-sm text-gray-600">
-                                Поддержите проект, чтобы оставить отзыв
+                                Support the project to leave a review
                             </p>
                         </div>
                     </CardContent>
@@ -136,9 +136,9 @@ function AddReview({ campaignId, campaign, isDonor, hasReviewed, onSuccess }: Ad
                             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                 <MessageSquare className="w-8 h-8 text-blue-600" />
                             </div>
-                            <h3 className="text-lg font-semibold mb-2">Кампания активна</h3>
+                            <h3 className="text-lg font-semibold mb-2">Campaign active</h3>
                             <p className="text-sm text-gray-600">
-                                Отзывы можно оставлять после завершения кампании
+                                Feedback can be left after the campaign ends.
                             </p>
                         </div>
                     </CardContent>
@@ -152,10 +152,10 @@ function AddReview({ campaignId, campaign, isDonor, hasReviewed, onSuccess }: Ad
             <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                     <MessageSquare className="w-5 h-5 text-indigo-600" />
-                    Оставить отзыв
+                    Leave feedback
                 </CardTitle>
                 <CardDescription>
-                    Поделитесь своим опытом участия в этой кампании
+                    Share your experience of participating in this campaign
                 </CardDescription>
             </CardHeader>
 
@@ -171,7 +171,7 @@ function AddReview({ campaignId, campaign, isDonor, hasReviewed, onSuccess }: Ad
                     {/* Рейтинг */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Ваша оценка *
+                            Your rating *
                         </label>
                         <div className="flex items-center gap-2">
                             {[1, 2, 3, 4, 5].map((value) => (
@@ -194,11 +194,11 @@ function AddReview({ campaignId, campaign, isDonor, hasReviewed, onSuccess }: Ad
                             ))}
                             {rating > 0 && (
                                 <span className="ml-2 text-sm text-gray-600 font-medium">
-                                    {rating === 1 && 'Плохо'}
-                                    {rating === 2 && 'Неудовлетворительно'}
-                                    {rating === 3 && 'Нормально'}
-                                    {rating === 4 && 'Хорошо'}
-                                    {rating === 5 && 'Отлично'}
+                                    {rating === 1 && 'Bad'}
+                                    {rating === 2 && 'Unsatisfactory'}
+                                    {rating === 3 && 'Normal'}
+                                    {rating === 4 && 'Fine'}
+                                    {rating === 5 && 'Great'}
                                 </span>
                             )}
                         </div>
@@ -212,7 +212,7 @@ function AddReview({ campaignId, campaign, isDonor, hasReviewed, onSuccess }: Ad
                         <textarea
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
-                            placeholder="Опишите ваш опыт участия в этой кампании..."
+                            placeholder="Describe your experience participating in this campaign..."
                             rows={4}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                             required
@@ -232,12 +232,12 @@ function AddReview({ campaignId, campaign, isDonor, hasReviewed, onSuccess }: Ad
                         {loading ? (
                             <>
                                 <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                Отправка...
+                                Sending...
                             </>
                         ) : (
                             <>
                                 <MessageSquare className="w-5 h-5 mr-2" />
-                                Оставить отзыв
+                                Leave feedback
                             </>
                         )}
                     </Button>
@@ -245,7 +245,7 @@ function AddReview({ campaignId, campaign, isDonor, hasReviewed, onSuccess }: Ad
 
                 <div className="mt-4 p-3 bg-gray-50 rounded-lg">
                     <p className="text-xs text-gray-600 text-center">
-                        Отзыв будет сохранен в блокчейне и станет виден всем
+                        The review will be saved on the blockchain and will be visible to everyone.
                     </p>
                 </div>
             </CardContent>

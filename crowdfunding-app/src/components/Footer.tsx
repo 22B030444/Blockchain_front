@@ -20,8 +20,8 @@ function Footer() {
                             </span>
                         </Link>
                         <p className="text-gray-400 mb-4 max-w-md">
-                            Децентрализованная платформа краудфандинга на блокчейне Ethereum.
-                            Прозрачность, безопасность и доверие в каждом проекте.
+                            A decentralized crowdfunding platform on the Ethereum blockchain.
+                            Transparency, security, and trust in every project.
                         </p>
                         <div className="flex gap-4">
                             <a
@@ -51,26 +51,26 @@ function Footer() {
 
                     {/* Навигация */}
                     <div>
-                        <h3 className="text-white font-semibold mb-4">Платформа</h3>
+                        <h3 className="text-white font-semibold mb-4">Platform</h3>
                         <ul className="space-y-2">
                             <li>
                                 <Link to="/" className="hover:text-white transition-colors">
-                                    Главная
+                                    Home
                                 </Link>
                             </li>
                             <li>
                                 <Link to="/explore" className="hover:text-white transition-colors">
-                                    Обзор проектов
+                                    Explore
                                 </Link>
                             </li>
                             <li>
                                 <Link to="/create" className="hover:text-white transition-colors">
-                                    Создать кампанию
+                                    Create a campaign
                                 </Link>
                             </li>
                             <li>
                                 <Link to="/my-campaigns" className="hover:text-white transition-colors">
-                                    Мои кампании
+                                    My campaigns
                                 </Link>
                             </li>
                         </ul>
@@ -78,11 +78,11 @@ function Footer() {
 
                     {/* Ресурсы */}
                     <div>
-                        <h3 className="text-white font-semibold mb-4">Ресурсы</h3>
+                        <h3 className="text-white font-semibold mb-4">Resources</h3>
                         <ul className="space-y-2">
                             <li>
                                 <a href="#" className="hover:text-white transition-colors">
-                                    Документация
+                                    Documentation
                                 </a>
                             </li>
                             <li>
@@ -92,7 +92,7 @@ function Footer() {
                             </li>
                             <li>
                                 <a href="#" className="hover:text-white transition-colors">
-                                    Поддержка
+                                    Support
                                 </a>
                             </li>
                             <li>
@@ -107,10 +107,10 @@ function Footer() {
                 {/* Нижняя часть */}
                 <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-gray-400 text-sm">
-                        © {currentYear} CrowdChain. Все права защищены.
+                        © {currentYear} CrowdChain. All rights reserved.
                     </p>
                     <p className="text-gray-400 text-sm flex items-center gap-1">
-                        Сделано с <Heart className="w-4 h-4 text-red-500 fill-red-500" /> на блокчейне
+                        Made by RetakeCoin with <Heart className="w-4 h-4 text-red-500 fill-red-500" />
                     </p>
                 </div>
             </div>

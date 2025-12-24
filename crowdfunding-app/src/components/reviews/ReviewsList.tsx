@@ -1,4 +1,4 @@
-// components/reviews/ReviewsList.tsx
+
 import { Review } from '../../types/campaign';
 import {formatAddress, formatDate} from '../../utils/formatters';
 import { Card, CardContent } from '../ui/card';
@@ -19,10 +19,10 @@ function ReviewsList({ reviews }: ReviewsListProps) {
                             <MessageSquare className="w-8 h-8 text-gray-400" />
                         </div>
                         <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                            Отзывов пока нет
+                            There are no reviews yet
                         </h3>
                         <p className="text-sm text-gray-500">
-                            Станьте первым, кто оставит отзыв об этой кампании
+                            Be the first to leave a review for this campaign
                         </p>
                     </div>
                 </CardContent>
@@ -30,7 +30,6 @@ function ReviewsList({ reviews }: ReviewsListProps) {
         );
     }
 
-    // Группируем по рейтингу для статистики
     const ratingCounts = reviews.reduce((acc, review) => {
         acc[review.rating] = (acc[review.rating] || 0) + 1;
         return acc;
@@ -63,7 +62,7 @@ function ReviewsList({ reviews }: ReviewsListProps) {
                                 ))}
                             </div>
                             <p className="text-sm text-gray-600">
-                                На основе {totalReviews} {totalReviews === 1 ? 'отзыва' : 'отзывов'}
+                                Based on {totalReviews} {totalReviews === 1 ? 'отзыва' : 'отзывов'}
                             </p>
                         </div>
 

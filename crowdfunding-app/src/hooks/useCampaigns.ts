@@ -18,11 +18,11 @@ export const useCampaigns = (category?: CampaignCategory) => {
 
             try {
                 setLoading(true);
-                console.log('Загрузка кампаний...');
+                console.log('Loading campaigns...');
 
                 // Используем getAllCampaigns из контракта
                 const allCampaigns = await contract.getAllCampaigns();
-                console.log('Получено кампаний:', allCampaigns.length);
+                console.log('Received campaigns:', allCampaigns.length);
 
                 const campaignsData: Campaign[] = [];
 
@@ -81,12 +81,12 @@ export const useCampaigns = (category?: CampaignCategory) => {
                     });
                 }
 
-                console.log('Обработано кампаний:', campaignsData.length);
+                console.log('Processed campaigns:', campaignsData.length);
                 setCampaigns(campaignsData);
                 setError(null);
             } catch (err) {
-                console.error('Ошибка загрузки кампаний:', err);
-                setError('Не удалось загрузить кампании');
+                console.error('Error loading campaigns:', err);
+                setError('Failed to load campaigns');
             } finally {
                 setLoading(false);
             }
