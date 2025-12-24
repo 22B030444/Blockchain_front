@@ -150,7 +150,7 @@ function Home() {
                             </p>
                             <Button
                                 onClick={() => navigate('/create')}
-                                variant="gradient"
+                                variant="ghost"
                                 size="lg"
                             >
                                 Создать кампанию

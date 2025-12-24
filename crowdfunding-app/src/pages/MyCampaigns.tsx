@@ -198,7 +198,11 @@ function MyCampaigns() {
                                 <TabsContent value="all" className="mt-0">
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {myCampaigns.map(campaign => (
-                                            <CampaignCard key={campaign.id} campaign={campaign} />
+                                            <CampaignCard
+                                                key={campaign.id}
+                                                campaign={campaign}
+                                                showManageButton={true}  // Добавьте этот проп
+                                            />
                                         ))}
                                     </div>
                                 </TabsContent>
@@ -213,7 +217,11 @@ function MyCampaigns() {
                                     ) : (
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                             {activeCampaigns.map(campaign => (
-                                                <CampaignCard key={campaign.id} campaign={campaign} />
+                                                <CampaignCard
+                                                    key={campaign.id}
+                                                    campaign={campaign}
+                                                    showManageButton={true}  // Добавьте этот проп
+                                                />
                                             ))}
                                         </div>
                                     )}
@@ -229,7 +237,11 @@ function MyCampaigns() {
                                     ) : (
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                             {[...successfulCampaigns, ...completedCampaigns].map(campaign => (
-                                                <CampaignCard key={campaign.id} campaign={campaign} />
+                                                <CampaignCard
+                                                    key={campaign.id}
+                                                    campaign={campaign}
+                                                    showManageButton={true}  // Добавьте этот проп
+                                                />
                                             ))}
                                         </div>
                                     )}
@@ -245,7 +257,11 @@ function MyCampaigns() {
                                     ) : (
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                             {failedCampaigns.map(campaign => (
-                                                <CampaignCard key={campaign.id} campaign={campaign} />
+                                                <CampaignCard
+                                                    key={campaign.id}
+                                                    campaign={campaign}
+                                                    showManageButton={true}  // Добавьте этот проп
+                                                />
                                             ))}
                                         </div>
                                     )}

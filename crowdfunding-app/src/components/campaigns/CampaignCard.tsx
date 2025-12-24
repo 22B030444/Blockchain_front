@@ -1,126 +1,146 @@
 // components/campaigns/CampaignCard.tsx
 import { useNavigate } from 'react-router-dom';
-import { Campaign, CATEGORY_NAMES, CampaignState } from '../../types/campaign';
-import { formatEther, formatDate, getDaysRemaining, getProgressPercentage } from '../../utils/formatters';
-import { Card, CardContent, CardFooter } from '../ui/card';
-import { Progress } from '../ui/progress';
-import { Badge } from '../ui/badge';
-import { Clock, Users } from 'lucide-react';
+import { Campaign, CATEGORY_NAMES} from '../../types/campaign';
+
+import {Clock, Settings, Users} from 'lucide-react';
+import {Button} from "antd";
 
 interface CampaignCardProps {
     campaign: Campaign;
+    showManageButton?: boolean;
 }
 
-function CampaignCard({ campaign }: CampaignCardProps) {
+function CampaignCard({ campaign, showManageButton = false }: CampaignCardProps) {
     const navigate = useNavigate();
-    const progress = getProgressPercentage(campaign.amountCollected, campaign.goal);
-    const daysLeft = getDaysRemaining(campaign.deadline);
-    const isActive = campaign.state === CampaignState.Active;
 
-    const getStateBadge = () => {
-        switch (campaign.state) {
-            case CampaignState.Active:
-                return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Активна</Badge>;
-            case CampaignState.Successful:
-                return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Успешна</Badge>;
-            case CampaignState.Failed:
-                return <Badge variant="destructive">Провалена</Badge>;
-            case CampaignState.Completed:
-                return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">Завершена</Badge>;
-            default:
-                return <Badge variant="secondary">Неизвестно</Badge>;
-        }
+    const progress = campaign.goal > 0n
+        ? Number((campaign.amountCollected * 100n) / campaign.goal)
+        : 0;
+
+    const amountCollected = Number(campaign.amountCollected) / 1e18;
+    const goal = Number(campaign.goal) / 1e18;
+
+    const deadline = new Date(Number(campaign.deadline) * 1000);
+    const now = new Date();
+    const daysLeft = Math.max(0, Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)));
+
+    const stateColors: Record<number, string> = {
+        0: 'bg-green-100 text-green-800',
+        1: 'bg-blue-100 text-blue-800',
+        2: 'bg-red-100 text-red-800',
+        3: 'bg-purple-100 text-purple-800'
     };
 
+    const stateNames: Record<number, string> = {
+        0: 'Активна',
+        1: 'Успешна',
+        2: 'Провалена',
+        3: 'Завершена'
+    };
+
+    const handleManageClick = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        navigate(`/campaign/${campaign.id}/dashboard`);
+    };
+
+    // @ts-ignore
+    // @ts-ignore
     return (
-        <Card
-            onClick={() => navigate(`/campaign/${campaign.id}`)}
-            className="cursor-pointer overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 group"
-        >
-            {/* Изображение */}
-            <div className="relative aspect-video bg-gray-100">
+        <div className="bg-white rounded-xl shadow-md overflow-hidden transform transition-all hover:shadow-xl">
+            {/* Image */}
+            <div
+                className="relative h-48 bg-gray-200 cursor-pointer"
+                onClick={() => navigate(`/campaign/${campaign.id}`)}
+            >
                 <img
                     src={campaign.imageUrl}
                     alt={campaign.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x225?text=No+Image';
+                        (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x300?text=No+Image';
                     }}
                 />
-
-                {/* Оверлей при наведении */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                {/* Категория */}
-                <Badge className="absolute top-3 left-3 bg-black/70 hover:bg-black/70 backdrop-blur-sm">
-                    {CATEGORY_NAMES[campaign.category]}
-                </Badge>
-
-                {/* Статус */}
+                <div className="absolute top-3 left-3">
+                    <span className="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-sm font-medium">
+                        {CATEGORY_NAMES[campaign.category]}
+                    </span>
+                </div>
                 <div className="absolute top-3 right-3">
-                    {getStateBadge()}
+                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${stateColors[campaign.state] || 'bg-gray-100 text-gray-800'}`}>
+                        {stateNames[campaign.state] || 'Неизвестно'}
+                    </span>
                 </div>
             </div>
 
-            <CardContent className="p-5">
-                {/* Заголовок */}
-                <h3 className="text-lg font-semibold mb-2 line-clamp-1 group-hover:text-indigo-600 transition-colors">
-                    {campaign.title}
-                </h3>
-
-                {/* Описание */}
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                    {campaign.description}
-                </p>
-
-                {/* Прогресс */}
-                <div className="space-y-2 mb-4">
-                    <Progress value={progress} className="h-2" />
-
-                    <div className="flex justify-between items-end">
-                        <div>
-                            <div className="text-lg font-bold text-indigo-600">
-                                {formatEther(campaign.amountCollected)} ETH
-                            </div>
-                            <div className="text-xs text-gray-500">
-                                из {formatEther(campaign.goal)} ETH
-                            </div>
-                        </div>
-
-                        <div className="text-right">
-                            <div className="text-2xl font-bold text-gray-900">{progress}%</div>
-                            <div className="text-xs text-gray-500">собрано</div>
-                        </div>
-                    </div>
-                </div>
-            </CardContent>
-
-            <CardFooter className="px-5 pb-5 pt-0 flex justify-between text-sm text-gray-600 border-t">
-                <div className="flex items-center gap-1.5 py-3">
-                    <Users className="w-4 h-4" />
-                    <span>{campaign.donorsCount}</span>
+            {/* Content */}
+            <div className="p-5">
+                <div
+                    className="cursor-pointer"
+                    onClick={() => navigate(`/campaign/${campaign.id}`)}
+                >
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2 hover:text-indigo-600 transition-colors">
+                        {campaign.title}
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                        {campaign.description}
+                    </p>
                 </div>
 
-                {isActive && daysLeft > 0 ? (
-                    <div className="flex items-center gap-1.5 py-3 text-orange-600">
-                        <Clock className="w-4 h-4" />
-                        <span>{daysLeft} {daysLeft === 1 ? 'день' : 'дней'}</span>
+                {/* Progress Bar */}
+                <div className="mb-4">
+                    <div className="flex justify-between text-sm mb-2">
+                        <span className="font-semibold text-indigo-600">
+                            {amountCollected.toFixed(4)} ETH
+                        </span>
+                        <span className="text-gray-600">
+                            {progress}%
+                        </span>
                     </div>
-                ) : (
-                    <div className="flex items-center gap-1.5 py-3">
-                        <Clock className="w-4 h-4" />
-                        <span>{formatDate(campaign.deadline)}</span>
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                            className="bg-gradient-to-r from-indigo-600 to-purple-600 h-2 rounded-full transition-all"
+                            style={{ width: `${Math.min(progress, 100)}%` }}
+                        ></div>
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                        из {goal.toFixed(4)} ETH
+                    </div>
+                </div>
+
+                {/* Manage Button */}
+                {showManageButton && (
+                    <div className="mb-4">
+                        <Button
+                            onClick={handleManageClick}
+                            variant="outlined"
+                            className="w-full"
+                            size="sm"
+                        >
+                            <Settings className="w-4 h-4 mr-2" />
+                            Управление
+                        </Button>
                     </div>
                 )}
 
-                {campaign.averageRating > 0 && (
-                    <div className="flex items-center gap-1.5 py-3">
-                        <span className="text-yellow-500">⭐</span>
-                        <span>{campaign.averageRating.toFixed(1)}</span>
+                {/* Stats */}
+                <div className="flex items-center justify-between text-sm text-gray-600 pt-4 border-t">
+                    <div className="flex items-center gap-1">
+                        <Users className="w-4 h-4" />
+                        <span>{campaign.donorsCount || 0}</span>
                     </div>
-                )}
-            </CardFooter>
-        </Card>
+                    <div className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        <span>{daysLeft > 0 ? `${daysLeft}д` : 'Завершена'}</span>
+                    </div>
+                    {campaign.averageRating > 0 && (
+                        <div className="flex items-center gap-1">
+                            <span className="text-yellow-500">⭐</span>
+                            <span>{campaign.averageRating.toFixed(1)}</span>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
     );
 }
 
