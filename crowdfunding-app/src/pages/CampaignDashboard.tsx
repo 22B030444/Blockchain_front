@@ -66,11 +66,11 @@ function CampaignDashboard() {
 
         // Валидация
         if (!newMilestone.title.trim()) {
-            setError('Укажите название этапа');
+            setError('Specify the name of the stage');
             return;
         }
         if (newMilestone.percentage <= 0 || newMilestone.percentage > 100) {
-            setError('Процент должен быть от 1 до 100');
+            setError('The percentage must be between 1 and 100');
             return;
         }
 
@@ -79,7 +79,7 @@ function CampaignDashboard() {
         const totalPercentage = existingMilestones.reduce((sum, m) => sum + m.percentage, 0) + newMilestone.percentage;
 
         if (totalPercentage > 100) {
-            setError(`Сумма процентов превышает 100% (текущая: ${totalPercentage}%)`);
+            setError(`The sum of the interest exceeds 100% (current: ${totalPercentage}%)`);
             return;
         }
 
@@ -94,11 +94,11 @@ function CampaignDashboard() {
                 newMilestone.durationDays
             );
 
-            console.log('Транзакция отправлена:', tx.hash);
+            console.log('Transaction sent:', tx.hash);
             await tx.wait();
-            console.log('Milestone добавлен!');
+            console.log('Milestone added!');
 
-            setSuccess('Этап успешно добавлен!');
+            setSuccess('Stage added successfully!');
             setNewMilestone({
                 title: '',
                 description: '',
@@ -109,8 +109,8 @@ function CampaignDashboard() {
             // Обновляем страницу
             setTimeout(() => window.location.reload(), 2000);
         } catch (err: any) {
-            console.error('Ошибка добавления milestone:', err);
-            setError(err.reason || err.message || 'Ошибка добавления этапа');
+            console.error('Error adding milestone:', err);
+            setError(err.reason || err.message || 'Error adding stage');
         } finally {
             setLoading(false);
         }
@@ -125,11 +125,11 @@ function CampaignDashboard() {
 
         // Валидация
         if (!newReward.description.trim()) {
-            setError('Укажите описание награды');
+            setError('Please provide a description of the award.');
             return;
         }
         if (!newReward.minAmount || parseFloat(newReward.minAmount) <= 0) {
-            setError('Укажите минимальную сумму доната');
+            setError('Specify the minimum donation amount');
             return;
         }
 
@@ -143,11 +143,11 @@ function CampaignDashboard() {
                 newReward.maxQuantity
             );
 
-            console.log('Транзакция отправлена:', tx.hash);
+            console.log('Transaction sent:', tx.hash);
             await tx.wait();
-            console.log('Reward добавлена!');
+            console.log('Reward added!');
 
-            setSuccess('Награда успешно добавлена!');
+            setSuccess('Reward successfully added!');
             setNewReward({
                 minAmount: '',
                 description: '',
@@ -157,8 +157,8 @@ function CampaignDashboard() {
             // Обновляем страницу
             setTimeout(() => window.location.reload(), 2000);
         } catch (err: any) {
-            console.error('Ошибка добавления reward:', err);
-            setError(err.reason || err.message || 'Ошибка добавления награды');
+            console.error('Error adding reward:', err);
+            setError(err.reason || err.message || 'Error adding reward');
         } finally {
             setLoading(false);
         }
@@ -178,8 +178,8 @@ function CampaignDashboard() {
                 <Card className="max-w-md">
                     <CardContent className="pt-6 text-center">
                         <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-                        <h2 className="text-2xl font-bold mb-2">Нет доступа</h2>
-                        <p className="text-gray-600">Вы не являетесь создателем этой кампании</p>
+                        <h2 className="text-2xl font-bold mb-2">No access</h2>
+                        <p className="text-gray-600">You are not the creator of this campaign</p>
                     </CardContent>
                 </Card>
             </div>
@@ -201,10 +201,10 @@ function CampaignDashboard() {
                         className="mb-4"
                     >
                         <ArrowLeft className="w-4 h-4 mr-2" />
-                        К кампании
+                        To the campaign
                     </Button>
                     <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                        Управление кампанией
+                        Campaign Management
                     </h1>
                     <p className="text-gray-600">{campaign.title}</p>
                 </div>
@@ -228,11 +228,11 @@ function CampaignDashboard() {
                     <TabsList className="grid w-full grid-cols-2 mb-8">
                         <TabsTrigger value="milestones">
                             <Flag className="w-4 h-4 mr-2" />
-                            Этапы проекта
+                            Milestones
                         </TabsTrigger>
                         <TabsTrigger value="rewards">
                             <Gift className="w-4 h-4 mr-2" />
-                            Награды
+                            Rewards
                         </TabsTrigger>
                     </TabsList>
 
@@ -240,10 +240,10 @@ function CampaignDashboard() {
                     <TabsContent value="milestones">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Добавить этап проекта</CardTitle>
+                                <CardTitle>Add milestone</CardTitle>
                                 <CardDescription>
-                                    Первый milestone (0) выводится автоматически как стартовый капитал.
-                                    Остальные требуют одобрения доноров. Всего использовано: {totalPercentage}%
+                                    The first milestone (0) is automatically withdrawn as seed capital.
+                                    The remaining milestones require donor approval. Total used: {totalPercentage}%
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
@@ -256,10 +256,10 @@ function CampaignDashboard() {
                                                 <div key={index} className="p-4 bg-gray-50 rounded-lg border">
                                                     <div className="flex items-center justify-between">
                                                         <div>
-                                                            <span className="font-semibold">Этап {index}</span>
+                                                            <span className="font-semibold">Milestone {index}</span>
                                                             {index === 0 && (
                                                                 <span className="ml-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                                                                    Автоматический
+                                                                    Auto
                                                                 </span>
                                                             )}
                                                             <p className="text-sm text-gray-600 mt-1">{milestone.title}</p>
@@ -279,24 +279,24 @@ function CampaignDashboard() {
                                     <>
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                                Название этапа *
+                                                Milestone name *
                                             </label>
                                             <Input
                                                 type="text"
                                                 value={newMilestone.title}
                                                 onChange={(e) => setNewMilestone({...newMilestone, title: e.target.value})}
-                                                placeholder="Например: Разработка MVP"
+                                                placeholder="For example: MVP development"
                                             />
                                         </div>
 
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                                Описание
+                                                Description
                                             </label>
                                             <textarea
                                                 value={newMilestone.description}
                                                 onChange={(e) => setNewMilestone({...newMilestone, description: e.target.value})}
-                                                placeholder="Детальное описание этапа"
+                                                placeholder="Detailed description of the stage"
                                                 rows={3}
                                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                             />
@@ -305,7 +305,7 @@ function CampaignDashboard() {
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                                    Процент от цели * (доступно: {100 - totalPercentage}%)
+                                                    Percentage of target * (available: {100 - totalPercentage}%)
                                                 </label>
                                                 <Input
                                                     type="number"
@@ -319,7 +319,7 @@ function CampaignDashboard() {
 
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                                    Длительность (дней) *
+                                                    Duration (days) *
                                                 </label>
                                                 <Input
                                                     type="number"
@@ -339,12 +339,12 @@ function CampaignDashboard() {
                                             {loading ? (
                                                 <>
                                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                    Добавление...
+                                                    Adding...
                                                 </>
                                             ) : (
                                                 <>
                                                     <Plus className="w-4 h-4 mr-2" />
-                                                    Добавить этап
+                                                    Add a milestone
                                                 </>
                                             )}
                                         </Button>
@@ -352,7 +352,7 @@ function CampaignDashboard() {
                                 ) : (
                                     <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-center">
                                         <p className="text-green-800 font-medium">
-                                            ✓ Все 100% распределены
+                                            ✓ All 100% distributed
                                         </p>
                                     </div>
                                 )}
@@ -364,16 +364,16 @@ function CampaignDashboard() {
                     <TabsContent value="rewards">
                         <Card>
                             <CardHeader>
-                                <CardTitle>Добавить награду</CardTitle>
+                                <CardTitle>Add a reward</CardTitle>
                                 <CardDescription>
-                                    Создайте награды для доноров разных уровней (максимум 5)
+                                    Create rewards for donors of different levels (maximum 5)
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 {/* Существующие rewards */}
                                 {existingRewards.length > 0 && (
                                     <div className="mb-6">
-                                        <h3 className="font-semibold mb-3">Текущие награды:</h3>
+                                        <h3 className="font-semibold mb-3">Current awards:</h3>
                                         <div className="space-y-2">
                                             {existingRewards.map((reward, index) => (
                                                 <div key={index} className="p-4 bg-gray-50 rounded-lg border">
@@ -381,10 +381,10 @@ function CampaignDashboard() {
                                                         <div className="flex-1">
                                                             <p className="font-medium">{reward.description}</p>
                                                             <p className="text-sm text-gray-600 mt-1">
-                                                                Мин. донат: {Number(reward.minAmount) / 1e18} ETH
+                                                                Min. donate: {Number(reward.minAmount) / 1e18} ETH
                                                             </p>
                                                             <p className="text-sm text-gray-600">
-                                                                Количество: {reward.maxQuantity === 0 ? 'Неограничено' : `${reward.claimed}/${reward.maxQuantity}`}
+                                                                Quantity: {reward.maxQuantity === 0 ? 'Unlimited' : `${reward.claimed}/${reward.maxQuantity}`}
                                                             </p>
                                                         </div>
                                                         <Gift className="w-8 h-8 text-purple-600" />
@@ -406,14 +406,14 @@ function CampaignDashboard() {
                                                 type="text"
                                                 value={newReward.description}
                                                 onChange={(e) => setNewReward({...newReward, description: e.target.value})}
-                                                placeholder="Например: Эксклюзивный доступ к бета-версии"
+                                                placeholder="For example: Exclusive access to the beta version"
                                             />
                                         </div>
 
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                                    Минимальный донат (ETH) *
+                                                    Minimum donation (ETH) *
                                                 </label>
                                                 <Input
                                                     type="number"
@@ -427,7 +427,7 @@ function CampaignDashboard() {
 
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                                    Количество (0 = неограничено)
+                                                    Quantity (0 = unlimited)
                                                 </label>
                                                 <Input
                                                     type="number"
@@ -447,12 +447,12 @@ function CampaignDashboard() {
                                             {loading ? (
                                                 <>
                                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                    Добавление...
+                                                    Adding...
                                                 </>
                                             ) : (
                                                 <>
                                                     <Plus className="w-4 h-4 mr-2" />
-                                                    Добавить награду
+                                                    Add a reward
                                                 </>
                                             )}
                                         </Button>
@@ -460,7 +460,7 @@ function CampaignDashboard() {
                                 ) : (
                                     <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
                                         <p className="text-yellow-800 font-medium">
-                                            Достигнут лимит наград (5)
+                                            Reward limit reached (5)
                                         </p>
                                     </div>
                                 )}

@@ -48,7 +48,7 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
             setIsConnecting(true);
 
             if (!window.ethereum) {
-                alert('Пожалуйста, установите MetaMask!');
+                alert('Please install MetaMask!');
                 return;
             }
 
@@ -70,11 +70,11 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
             setSigner(userSigner);
             setContract(crowdfundingContract);
 
-            console.log('✅ Кошелек подключен:', accounts[0]);
+            console.log('✅ Wallet connected:', accounts[0]);
 
         } catch (error) {
-            console.error('❌ Ошибка подключения:', error);
-            alert('Ошибка подключения к MetaMask');
+            console.error('❌ Connection error:', error);
+            alert('Error connecting to MetaMask');
         } finally {
             setIsConnecting(false);
         }
@@ -85,7 +85,7 @@ export const Web3Provider = ({ children }: Web3ProviderProps) => {
         setContract(null);
         setProvider(null);
         setSigner(null);
-        console.log('👋 Кошелек отключен');
+        console.log('👋 The wallet is disabled');
     };
 
     useEffect(() => {

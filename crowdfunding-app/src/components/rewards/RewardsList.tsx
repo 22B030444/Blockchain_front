@@ -56,14 +56,14 @@ function RewardsList({ rewards, userDonation = 0n }: RewardsListProps) {
                                                 {isEligible && (
                                                     <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
                                                         <CheckCircle className="w-3 h-3 mr-1" />
-                                                        Доступно вам
+                                                        Available to you
                                                     </Badge>
                                                 )}
 
                                                 {!isAvailable && (
                                                     <Badge variant="destructive">
                                                         <XCircle className="w-3 h-3 mr-1" />
-                                                        Закончились
+                                                        Finished
                                                     </Badge>
                                                 )}
                                             </div>
@@ -74,7 +74,7 @@ function RewardsList({ rewards, userDonation = 0n }: RewardsListProps) {
                                         <div className="flex items-center gap-2 text-gray-600">
                                             <DollarSign className="w-4 h-4 text-indigo-600" />
                                             <div>
-                                                <div className="text-xs text-gray-500">Мин. донат</div>
+                                                <div className="text-xs text-gray-500">Min. donate</div>
                                                 <div className="font-semibold text-gray-900">
                                                     {formatEther(reward.minAmount)} ETH
                                                 </div>
@@ -85,7 +85,7 @@ function RewardsList({ rewards, userDonation = 0n }: RewardsListProps) {
                                             <div className="flex items-center gap-2 text-gray-600">
                                                 <Gift className="w-4 h-4 text-purple-600" />
                                                 <div>
-                                                    <div className="text-xs text-gray-500">Доступно</div>
+                                                    <div className="text-xs text-gray-500">Available</div>
                                                     <div className="font-semibold text-gray-900">
                                                         {remaining} / {reward.maxQuantity}
                                                     </div>
@@ -97,9 +97,9 @@ function RewardsList({ rewards, userDonation = 0n }: RewardsListProps) {
                                             <div className="flex items-center gap-2 text-gray-600">
                                                 <Gift className="w-4 h-4 text-purple-600" />
                                                 <div>
-                                                    <div className="text-xs text-gray-500">Количество</div>
+                                                    <div className="text-xs text-gray-500">Quantity</div>
                                                     <div className="font-semibold text-gray-900">
-                                                        Неограничено
+                                                        Unlimited
                                                     </div>
                                                 </div>
                                             </div>

@@ -19,7 +19,7 @@ function Home() {
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="text-center">
                     <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mx-auto mb-4" />
-                    <h2 className="text-2xl font-semibold text-gray-700">Загрузка кампаний...</h2>
+                    <h2 className="text-2xl font-semibold text-gray-700">Loading campaigns...</h2>
                 </div>
             </div>
         );
@@ -30,7 +30,7 @@ function Home() {
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="text-center">
                     <div className="text-red-600 text-6xl mb-4">⚠️</div>
-                    <h2 className="text-2xl font-semibold text-red-600 mb-2">Ошибка загрузки</h2>
+                    <h2 className="text-2xl font-semibold text-red-600 mb-2">Loading error</h2>
                     <p className="text-gray-600">{error}</p>
                 </div>
             </div>
@@ -39,28 +39,28 @@ function Home() {
 
     const stats = [
         {
-            label: 'Всего кампаний',
+            label: 'Total campaigns',
             value: campaigns.length,
             icon: TrendingUp,
             color: 'text-blue-600',
             bgColor: 'bg-blue-50'
         },
         {
-            label: 'Успешных',
+            label: 'Successful',
             value: campaigns.filter(c => c.state === CampaignState.Successful).length,
             icon: CheckCircle,
             color: 'text-green-600',
             bgColor: 'bg-green-50'
         },
         {
-            label: 'Активных',
+            label: 'Active',
             value: campaigns.filter(c => c.state === CampaignState.Active).length,
             icon: Target,
             color: 'text-orange-600',
             bgColor: 'bg-orange-50'
         },
         {
-            label: 'Доноров',
+            label: 'Donors',
             value: campaigns.reduce((sum, c) => sum + c.donorsCount, 0),
             icon: Users,
             color: 'text-purple-600',
@@ -76,10 +76,10 @@ function Home() {
                     <div className="absolute inset-0 bg-black opacity-10"></div>
                     <div className="relative z-10 text-center text-white">
                         <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-200">
-                            Добро пожаловать в CrowdChain
+                            Welcome to CrowdChain
                         </h1>
                         <p className="text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto">
-                            Децентрализованная платформа для финансирования инновационных проектов на блокчейне Ethereum
+                            A decentralized platform for funding innovative projects on the Ethereum blockchain.
                         </p>
                         <Button
                             onClick={() => navigate('/create')}
@@ -87,7 +87,7 @@ function Home() {
                             className="bg-white text-indigo-600 hover:bg-gray-100 text-lg px-8 py-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
                         >
                             <TrendingUp className="w-5 h-5 mr-2" />
-                            Создать кампанию
+                            Create a campaign
                         </Button>
                     </div>
 
@@ -120,10 +120,10 @@ function Home() {
                 {/* Заголовок секции */}
                 <div className="mb-8">
                     <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                        Исследуйте проекты
+                        Explore projects
                     </h2>
                     <p className="text-gray-600">
-                        Найдите интересные проекты и поддержите их развитие
+                        Find interesting projects and support their development
                     </p>
                 </div>
 
@@ -141,19 +141,19 @@ function Home() {
                         <div className="text-center">
                             <div className="text-gray-400 text-6xl mb-4">📦</div>
                             <h3 className="text-2xl font-semibold text-gray-700 mb-2">
-                                Пока нет кампаний
+                                There are no campaigns yet
                             </h3>
                             <p className="text-gray-500 mb-6">
                                 {selectedCategory !== null
-                                    ? 'В этой категории пока нет кампаний'
-                                    : 'Будьте первым, кто создаст кампанию!'}
+                                    ? 'There are no campaigns in this category yet'
+                                    : 'Be the first to create a campaign!'}
                             </p>
                             <Button
                                 onClick={() => navigate('/create')}
                                 variant="ghost"
                                 size="lg"
                             >
-                                Создать кампанию
+                                Create a campaign
                             </Button>
                         </div>
                     </Card>

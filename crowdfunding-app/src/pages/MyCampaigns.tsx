@@ -37,9 +37,9 @@ function MyCampaigns() {
                         <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <Rocket className="w-8 h-8 text-indigo-600" />
                         </div>
-                        <h2 className="text-2xl font-bold mb-2">Требуется подключение</h2>
+                        <h2 className="text-2xl font-bold mb-2">Connection required</h2>
                         <p className="text-gray-600 mb-6">
-                            Подключите кошелек для просмотра ваших кампаний
+                            Connect your wallet to view your campaigns
                         </p>
                     </CardContent>
                 </Card>
@@ -53,7 +53,7 @@ function MyCampaigns() {
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="text-center">
                     <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mx-auto mb-4" />
-                    <h2 className="text-2xl font-semibold text-gray-700">Загрузка...</h2>
+                    <h2 className="text-2xl font-semibold text-gray-700">Loading...</h2>
                 </div>
             </div>
         );
@@ -65,7 +65,7 @@ function MyCampaigns() {
             <div className="flex items-center justify-center min-h-[60vh]">
                 <div className="text-center">
                     <div className="text-red-600 text-6xl mb-4">⚠️</div>
-                    <h2 className="text-2xl font-semibold text-red-600 mb-2">Ошибка загрузки</h2>
+                    <h2 className="text-2xl font-semibold text-red-600 mb-2">Loading error</h2>
                     <p className="text-gray-600">{error}</p>
                 </div>
             </div>
@@ -76,28 +76,28 @@ function MyCampaigns() {
     // Статистика
     const stats = [
         {
-            label: 'Всего кампаний',
+            label: 'Total campaigns',
             value: myCampaigns.length,
             icon: Rocket,
             color: 'text-blue-600',
             bgColor: 'bg-blue-50'
         },
         {
-            label: 'Активных',
+            label: 'Active',
             value: activeCampaigns.length,
             icon: TrendingUp,
             color: 'text-orange-600',
             bgColor: 'bg-orange-50'
         },
         {
-            label: 'Успешных',
+            label: 'Successful',
             value: successfulCampaigns.length + completedCampaigns.length,
             icon: CheckCircle,
             color: 'text-green-600',
             bgColor: 'bg-green-50'
         },
         {
-            label: 'Провалено',
+            label: 'Failed',
             value: failedCampaigns.length,
             icon: XCircle,
             color: 'text-red-600',
@@ -113,10 +113,10 @@ function MyCampaigns() {
                 <div className="flex items-center justify-between mb-8">
                     <div>
                         <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                            Мои кампании
+                            My campaigns
                         </h1>
                         <p className="text-gray-600">
-                            Управляйте вашими проектами и отслеживайте прогресс
+                            Manage your projects and track progress
                         </p>
                     </div>
                     <Button
@@ -125,7 +125,7 @@ function MyCampaigns() {
                         size="lg"
                     >
                         <PlusCircle className="w-5 h-5 mr-2" />
-                        Создать кампанию
+                        Create a campaign
                     </Button>
                 </div>
 
@@ -158,10 +158,10 @@ function MyCampaigns() {
                         <div className="text-center">
                             <div className="text-gray-400 text-6xl mb-4">📦</div>
                             <h3 className="text-2xl font-semibold text-gray-700 mb-2">
-                                У вас пока нет кампаний
+                                You don't have any campaigns yet.
                             </h3>
                             <p className="text-gray-500 mb-6">
-                                Создайте свою первую кампанию и начните привлекать финансирование
+                                Create your first campaign and start raising funds
                             </p>
                             <Button
                                 onClick={() => navigate('/create')}
@@ -169,7 +169,7 @@ function MyCampaigns() {
                                 size="lg"
                             >
                                 <PlusCircle className="w-5 h-5 mr-2" />
-                                Создать первую кампанию
+                                Create your first campaign
                             </Button>
                         </div>
                     </Card>
@@ -179,16 +179,16 @@ function MyCampaigns() {
                             <div className="border-b px-6 pt-6">
                                 <TabsList className="w-full justify-start">
                                     <TabsTrigger value="all">
-                                        Все ({myCampaigns.length})
+                                        All ({myCampaigns.length})
                                     </TabsTrigger>
                                     <TabsTrigger value="active">
-                                        Активные ({activeCampaigns.length})
+                                        Active ({activeCampaigns.length})
                                     </TabsTrigger>
                                     <TabsTrigger value="successful">
-                                        Успешные ({successfulCampaigns.length + completedCampaigns.length})
+                                        Successful ({successfulCampaigns.length + completedCampaigns.length})
                                     </TabsTrigger>
                                     <TabsTrigger value="failed">
-                                        Провалено ({failedCampaigns.length})
+                                        Failed ({failedCampaigns.length})
                                     </TabsTrigger>
                                 </TabsList>
                             </div>
@@ -232,7 +232,7 @@ function MyCampaigns() {
                                     {[...successfulCampaigns, ...completedCampaigns].length === 0 ? (
                                         <div className="text-center py-12 text-gray-500">
                                             <CheckCircle className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                                            <p>Пока нет успешных кампаний</p>
+                                            <p>There are no successful campaigns yet</p>
                                         </div>
                                     ) : (
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -240,7 +240,7 @@ function MyCampaigns() {
                                                 <CampaignCard
                                                     key={campaign.id}
                                                     campaign={campaign}
-                                                    showManageButton={true}  // Добавьте этот проп
+                                                    showManageButton={true}
                                                 />
                                             ))}
                                         </div>
@@ -252,7 +252,7 @@ function MyCampaigns() {
                                     {failedCampaigns.length === 0 ? (
                                         <div className="text-center py-12 text-gray-500">
                                             <CheckCircle className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                                            <p>Нет проваленных кампаний - отличная работа! 🎉</p>
+                                            <p>No failed campaigns - great job! 🎉</p>
                                         </div>
                                     ) : (
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

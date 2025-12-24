@@ -29,12 +29,12 @@ function CreateCampaign() {
 
     // Валидация
     const validate = (): string | null => {
-        if (!title.trim()) return 'Укажите название';
-        if (!description.trim()) return 'Укажите описание';
-        if (!imageUrl.trim() || !isValidUrl(imageUrl)) return 'Укажите корректный URL изображения';
-        if (!isValidAmount(goal)) return 'Укажите корректную цель сбора';
-        if (!durationDays || Number(durationDays) <= 0) return 'Укажите длительность кампании';
-        if (!isValidAmount(minDonation)) return 'Укажите корректную минимальную сумму доната';
+        if (!title.trim()) return 'Please provide the title';
+        if (!description.trim()) return 'Please provide a description';
+        if (!imageUrl.trim() || !isValidUrl(imageUrl)) return 'Please provide a valid image URL.';
+        if (!isValidAmount(goal)) return 'Please indicate the correct purpose of collection';
+        if (!durationDays || Number(durationDays) <= 0) return 'Specify the duration of the campaign';
+        if (!isValidAmount(minDonation)) return 'Please enter the correct minimum donation amount.';
 
         return null;
     };
@@ -44,7 +44,7 @@ function CreateCampaign() {
         e.preventDefault();
 
         if (!contract || !account) {
-            setError('Подключите кошелек');
+            setError('Connect your wallet');
             return;
         }
 
@@ -56,7 +56,7 @@ function CreateCampaign() {
 
         const goalValue = parseFloat(goal);
         if (goalValue > 1000) {
-            setError('Максимальная цель: 1000 ETH');
+            setError('Maximum target: 1000 ETH');
             return;
         }
 
@@ -64,7 +64,7 @@ function CreateCampaign() {
             setLoading(true);
             setError(null);
 
-            console.log('Отправка данных в контракт:', {
+            console.log('Sending data to the contract:', {
                 title,
                 description,
                 imageUrl,
@@ -85,16 +85,16 @@ function CreateCampaign() {
                 parseEther(minDonation)            // uint256 _minDonation
             );
 
-            console.log('Транзакция отправлена:', tx.hash);
+            console.log('Transaction sent:', tx.hash);
             await tx.wait();
-            console.log('Кампания создана!');
+            console.log('The campaign has been created!');
 
             navigate('/');
         } catch (err: any) {
-            console.error('Ошибка создания кампании:', err);
+            console.error('Error creating campaign:', err);
 
             // Более детальная обработка ошибок
-            let errorMessage = 'Ошибка создания кампании';
+            let errorMessage = 'Error creating campaign:';
             if (err.reason) {
                 errorMessage = err.reason;
             } else if (err.message) {
@@ -115,9 +115,9 @@ function CreateCampaign() {
                         <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <AlertCircle className="w-8 h-8 text-indigo-600" />
                         </div>
-                        <h2 className="text-2xl font-bold mb-2">Требуется подключение</h2>
+                        <h2 className="text-2xl font-bold mb-2">Connection required</h2>
                         <p className="text-gray-600">
-                            Подключите кошелек MetaMask для создания кампании
+                            Connect your MetaMask wallet to create a campaign
                         </p>
                     </CardContent>
                 </Card>
@@ -131,10 +131,10 @@ function CreateCampaign() {
                 {/* Заголовок */}
                 <div className="text-center mb-8">
                     <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
-                        Создать кампанию
+                        Create a campaign
                     </h1>
                     <p className="text-gray-600">
-                        Запустите свой проект и привлеките финансирование на блокчейне
+                        Launch your project and raise funding on the blockchain
                     </p>
                 </div>
 
@@ -152,23 +152,23 @@ function CreateCampaign() {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Rocket className="w-5 h-5 text-indigo-600" />
-                                Основная информация
+                                Basic information
                             </CardTitle>
                             <CardDescription>
-                                Расскажите о вашем проекте
+                                Tell us about your project
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             {/* Название */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                    Название кампании *
+                                    Campaign Name *
                                 </label>
                                 <Input
                                     type="text"
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    placeholder="Например: Инновационный проект в сфере AI"
+                                    placeholder="For example: Innovative project in the field of AI"
                                     required
                                 />
                             </div>
@@ -181,7 +181,7 @@ function CreateCampaign() {
                                 <textarea
                                     value={description}
                                     onChange={(e) => setDescription(e.target.value)}
-                                    placeholder="Подробно опишите ваш проект, его цели и планы"
+                                    placeholder="Describe your project in detail, its goals and plans"
                                     rows={6}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
                                     required
@@ -192,7 +192,7 @@ function CreateCampaign() {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                     <ImageIcon className="w-4 h-4" />
-                                    URL изображения *
+                                    URL image *
                                 </label>
                                 <Input
                                     type="url"
@@ -219,7 +219,7 @@ function CreateCampaign() {
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                                     <Tag className="w-4 h-4" />
-                                    Категория *
+                                    Category *
                                 </label>
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                                     {Object.entries(CATEGORY_NAMES).map(([key, value]) => (
@@ -244,7 +244,7 @@ function CreateCampaign() {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                         <Target className="w-4 h-4" />
-                                        Цель (ETH) *
+                                        Target (ETH) *
                                     </label>
                                     <Input
                                         type="number"
@@ -261,7 +261,7 @@ function CreateCampaign() {
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1.5 flex items-center gap-2">
                                         <Calendar className="w-4 h-4" />
-                                        Длительность (дней) *
+                                        Duration (days) *
                                     </label>
                                     <Input
                                         type="number"
@@ -276,7 +276,7 @@ function CreateCampaign() {
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                                        Мин. донат (ETH) *
+                                        Min. donate (ETH) *
                                     </label>
                                     <Input
                                         type="number"
@@ -298,11 +298,11 @@ function CreateCampaign() {
                             <div className="flex items-start gap-3">
                                 <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                                 <div className="text-sm text-blue-800">
-                                    <p className="font-medium mb-1">Важная информация:</p>
+                                    <p className="font-medium mb-1">Important information:</p>
                                     <ul className="list-disc list-inside space-y-1">
-                                        <li>Milestones и rewards можно добавить позже через отдельные функции контракта</li>
-                                        <li>После создания кампанию нельзя будет удалить</li>
-                                        <li>Убедитесь, что все данные указаны корректно</li>
+                                        <li>Milestones and rewards can be added later through separate contract functions.</li>
+                                        <li>Once created, the campaign cannot be deleted.</li>
+                                        <li>Make sure all data is entered correctly.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -318,7 +318,7 @@ function CreateCampaign() {
                             className="flex-1"
                             disabled={loading}
                         >
-                            Отмена
+                            Cancel
                         </Button>
                         <Button
                             type="submit"
@@ -328,12 +328,12 @@ function CreateCampaign() {
                             {loading ? (
                                 <>
                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                    Создание...
+                                    Creation...
                                 </>
                             ) : (
                                 <>
                                     <Rocket className="w-4 h-4 mr-2" />
-                                    Создать кампанию
+                                    Create a campaign
                                 </>
                             )}
                         </Button>
