@@ -339,9 +339,6 @@ function CampaignDetails() {
                                         )}
                                     </TabsContent>
 
-                                    // Исправленный фрагмент для страницы CampaignDetails.tsx
-                                    // Замените TabsContent для rewards на этот код:
-
                                     <TabsContent value="rewards" className="mt-0">
                                         {campaign.rewards && campaign.rewards.length > 0 ? (
                                             <RewardsList
