@@ -11,6 +11,7 @@ import MilestonesList from '../components/milestones/MilestonesList';
 import RewardsList from '../components/rewards/RewardsList';
 import AddReview from '../components/reviews/AddReview';
 import ReviewsList from '../components/reviews/ReviewsList';
+import DonorsTab from '../components/campaigns/DonorsTab';
 import { formatEther, formatDate, getDaysRemaining, getProgressPercentage, formatAddress } from '../utils/formatters';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader} from '../components/ui/card';
@@ -294,13 +295,16 @@ function CampaignDetails() {
                         <Card>
                             <Tabs defaultValue="description" className="w-full">
                                 <CardHeader className="pb-4">
-                                    <TabsList className="grid w-full grid-cols-4">
+                                    <TabsList className="grid w-full grid-cols-5">
                                         <TabsTrigger value="description">Description</TabsTrigger>
                                         <TabsTrigger value="milestones">
                                             Milestones ({campaign.milestones?.length || 0})
                                         </TabsTrigger>
                                         <TabsTrigger value="rewards">
                                             Rewards ({campaign.rewards?.length || 0})
+                                        </TabsTrigger>
+                                        <TabsTrigger value="donors">
+                                            Donors ({campaign.donorsCount || 0})
                                         </TabsTrigger>
                                         <TabsTrigger value="reviews">
                                             Reviews ({campaign.reviews?.length || 0})
@@ -347,6 +351,10 @@ function CampaignDetails() {
                                                 <p>No rewards provided</p>
                                             </div>
                                         )}
+                                    </TabsContent>
+
+                                    <TabsContent value="donors" className="mt-0">
+                                        <DonorsTab campaignId={campaignId} />
                                     </TabsContent>
 
                                     <TabsContent value="reviews" className="mt-0">
@@ -406,4 +414,3 @@ function CampaignDetails() {
 }
 
 export default CampaignDetails;
-
