@@ -7,6 +7,7 @@ import { CampaignState, CATEGORY_NAMES } from '../types/campaign';
 import DonateForm from '../components/campaigns/DonateForm';
 import WithdrawFunds from '../components/campaigns/WithdrawFunds';
 import RefundForm from '../components/campaigns/RefundForm';
+import UpdateStatusButton from '../components/campaigns/UpdateStatusButton';
 import MilestonesList from '../components/milestones/MilestonesList';
 import RewardsList from '../components/rewards/RewardsList';
 import AddReview from '../components/reviews/AddReview';
@@ -380,6 +381,13 @@ function CampaignDetails() {
                     {/* Right column - donate/withdraw/refund forms */}
                     <div className="lg:col-span-1">
                         <div className="sticky top-24 space-y-6">
+                            {/* UPDATE STATUS BUTTON - NEW! */}
+                            <UpdateStatusButton
+                                campaignId={campaignId}
+                                campaign={campaign}
+                                onSuccess={handleRefresh}
+                            />
+
                             {/* Withdraw Funds - for creator of successful campaign */}
                             {isCreator && (
                                 <WithdrawFunds
