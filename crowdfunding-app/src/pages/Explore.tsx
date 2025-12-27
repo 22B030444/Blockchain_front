@@ -110,7 +110,7 @@ function Explore() {
                 {/* Заголовок */}
                 <div className="mb-8">
                     <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
-                        Обзор проектов
+                        Project overview
                     </h1>
                     <p className="text-gray-600">
                         Explore innovative projects and support ideas you love

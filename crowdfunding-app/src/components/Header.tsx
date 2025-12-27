@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Wallet, Menu, X, TrendingUp, LogOut } from 'lucide-react';
+import { Wallet, Menu, X, TrendingUp, LogOut, BarChart3 } from 'lucide-react';
 import { useWeb3 } from '../contexts/Web3Context';
 import { Button } from './ui/button';
 
@@ -41,8 +41,8 @@ export function Header() {
                             <TrendingUp className="w-6 h-6 text-white" />
                         </div>
                         <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-              CrowdChain
-            </span>
+                            CrowdChain
+                        </span>
                     </Link>
 
                     {/* Desktop Navigation */}
@@ -63,6 +63,15 @@ export function Header() {
                         >
                             Explore
                         </Link>
+                        <Link
+                            to="/statistics"
+                            className={`transition-colors flex items-center gap-1 ${
+                                isActive('/statistics') ? 'text-indigo-600 font-medium' : 'text-gray-700 hover:text-indigo-600'
+                            }`}
+                        >
+                            <BarChart3 className="w-4 h-4" />
+                            Statistics
+                        </Link>
                         {account && (
                             <Link
                                 to="/my-campaigns"
@@ -78,7 +87,7 @@ export function Header() {
                     {/* Desktop Actions */}
                     <div className="hidden md:flex items-center gap-4">
                         <Link to="/create" onClick={() => setIsMenuOpen(false)}>
-                            <button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2 rounded-lg font-medium">
+                            <button className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 transition-all">
                                 Create Campaign
                             </button>
                         </Link>
@@ -98,7 +107,7 @@ export function Header() {
                                 <button
                                     onClick={disconnectWallet}
                                     className="ml-2 p-2 text-gray-600 hover:text-red-600 transition-colors"
-                                    title="Отключить"
+                                    title="Disconnect"
                                 >
                                     <LogOut className="w-4 h-4" />
                                 </button>
@@ -106,7 +115,7 @@ export function Header() {
                         ) : (
                             <Button onClick={connectWallet} variant="outline">
                                 <Wallet className="w-4 h-4 mr-2" />
-                                Connect a wallet
+                                Connect Wallet
                             </Button>
                         )}
                     </div>
@@ -150,6 +159,18 @@ export function Header() {
                             >
                                 Explore
                             </Link>
+                            <Link
+                                to="/statistics"
+                                onClick={() => setIsMenuOpen(false)}
+                                className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ${
+                                    isActive('/statistics')
+                                        ? 'bg-indigo-50 text-indigo-600 font-medium'
+                                        : 'text-gray-700 hover:bg-gray-100'
+                                }`}
+                            >
+                                <BarChart3 className="w-4 h-4" />
+                                Statistics
+                            </Link>
                             {account && (
                                 <Link
                                     to="/my-campaigns"
@@ -160,7 +181,7 @@ export function Header() {
                                             : 'text-gray-700 hover:bg-gray-100'
                                     }`}
                                 >
-                                    My campaigns
+                                    My Campaigns
                                 </Link>
                             )}
 
@@ -171,7 +192,7 @@ export function Header() {
                                     className="block"
                                 >
                                     <Button variant="ghost" className="w-full">
-                                        Create a campaign
+                                        Create Campaign
                                     </Button>
                                 </Link>
 
@@ -179,7 +200,7 @@ export function Header() {
                                     <div className="space-y-3">
                                         <div className="bg-gray-100 px-4 py-3 rounded-lg">
                                             <div className="flex items-center justify-between mb-2">
-                                                <span className="text-sm text-gray-600">Баланс</span>
+                                                <span className="text-sm text-gray-600">Balance</span>
                                                 <span className="font-semibold">{balance} ETH</span>
                                             </div>
                                             <div className="text-sm font-medium text-gray-900">
@@ -195,7 +216,7 @@ export function Header() {
                                             className="w-full"
                                         >
                                             <LogOut className="w-4 h-4 mr-2" />
-                                            Disable
+                                            Disconnect
                                         </Button>
                                     </div>
                                 ) : (
@@ -208,7 +229,7 @@ export function Header() {
                                         className="w-full"
                                     >
                                         <Wallet className="w-4 h-4 mr-2" />
-                                        Connect a wallet
+                                        Connect Wallet
                                     </Button>
                                 )}
                             </div>
