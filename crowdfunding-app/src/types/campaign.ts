@@ -1,4 +1,3 @@
-// types/campaign.ts
 
 export enum CampaignCategory {
     ART = 0,
@@ -18,7 +17,6 @@ export const CATEGORY_NAMES = {
     [CampaignCategory.ECOLOGY]: 'Ecology 🌱'
 };
 
-// 👇 ОСТАВЛЯЕМ ОБА: CampaignStatus (новый) и CampaignState (старый для совместимости)
 export enum CampaignStatus {
     Active = 0,
     Successful = 1,
@@ -26,7 +24,6 @@ export enum CampaignStatus {
     Completed = 3
 }
 
-// Алиас для обратной совместимости
 export const CampaignState = CampaignStatus;
 
 export interface Milestone {

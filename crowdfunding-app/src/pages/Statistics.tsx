@@ -1,4 +1,3 @@
-// pages/Statistics.tsx
 import { usePlatformStats } from '../hooks/usePlatformStats';
 import { CATEGORY_NAMES } from '../types/campaign';
 import { formatEther } from '../utils/formatters';
@@ -42,7 +41,6 @@ function Statistics() {
         );
     }
 
-    // Calculate max for scaling charts
     const maxCategoryAmount = Math.max(...stats.categoryStats.map(c => Number(c.totalRaised)));
     const maxCategoryCount = Math.max(...stats.categoryStats.map(c => c.campaignCount));
 

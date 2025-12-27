@@ -1,4 +1,3 @@
-// contexts/Web3Context.tsx
 import { createContext, useState, useEffect, ReactNode, useContext } from 'react';
 import { ethers, BrowserProvider, Contract, Signer } from 'ethers';
 import { CROWDFUNDING_ABI, CONTRACT_ADDRESS } from '../contracts/CrowdfundingABI';
@@ -23,7 +22,6 @@ export const Web3Context = createContext<Web3ContextType>({
     isConnecting: false,
 });
 
-// 👇 ДОБАВЬ ЭТОТ ХУК
 export const useWeb3 = () => {
     const context = useContext(Web3Context);
     if (!context) {

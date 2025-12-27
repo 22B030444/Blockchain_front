@@ -1,4 +1,3 @@
-// pages/CampaignDetails.tsx
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useWeb3 } from '../contexts/Web3Context';
@@ -43,7 +42,6 @@ function CampaignDetails() {
     const [isDonor, setIsDonor] = useState(false);
     const [hasReviewed, setHasReviewed] = useState(false);
 
-    // Load user donation information
     useEffect(() => {
         const fetchUserDonation = async () => {
             if (!contract || !account || !campaign) return;
@@ -60,7 +58,6 @@ function CampaignDetails() {
         fetchUserDonation();
     }, [contract, account, campaignId, campaign]);
 
-    // Check if user has reviewed
     useEffect(() => {
         const checkReview = async () => {
             if (!contract || !account || !campaign) return;

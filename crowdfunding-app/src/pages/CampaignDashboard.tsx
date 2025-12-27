@@ -1,4 +1,3 @@
-// pages/CampaignDashboard.tsx
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useWeb3 } from '../contexts/Web3Context';
@@ -30,7 +29,6 @@ function CampaignDashboard() {
     const campaignId = Number(id);
     const { campaign, loading: campaignLoading } = useCampaign(campaignId);
 
-    // Убираем неиспользуемые state
     const [newMilestone, setNewMilestone] = useState<MilestoneForm>({
         title: '',
         description: '',
@@ -48,7 +46,6 @@ function CampaignDashboard() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    // Проверка прав доступа
     const isCreator = account?.toLowerCase() === campaign?.creator.toLowerCase();
 
     useEffect(() => {
@@ -57,14 +54,12 @@ function CampaignDashboard() {
         }
     }, [campaign, isCreator, campaignId, navigate]);
 
-    // Добавление Milestone
     const handleAddMilestone = async () => {
         if (!contract || !campaign) return;
 
         setError(null);
         setSuccess(null);
 
-        // Валидация
         if (!newMilestone.title.trim()) {
             setError('Specify the name of the stage');
             return;
@@ -74,7 +69,6 @@ function CampaignDashboard() {
             return;
         }
 
-        // Проверка суммы процентов
         const existingMilestones = campaign.milestones || [];
         const totalPercentage = existingMilestones.reduce((sum, m) => sum + m.percentage, 0) + newMilestone.percentage;
 
@@ -106,7 +100,6 @@ function CampaignDashboard() {
                 durationDays: 30
             });
 
-            // Обновляем страницу
             setTimeout(() => window.location.reload(), 2000);
         } catch (err: any) {
             console.error('Error adding milestone:', err);
@@ -116,14 +109,12 @@ function CampaignDashboard() {
         }
     };
 
-    // Добавление Reward
     const handleAddReward = async () => {
         if (!contract || !campaign) return;
 
         setError(null);
         setSuccess(null);
 
-        // Валидация
         if (!newReward.description.trim()) {
             setError('Please provide a description of the award.');
             return;
@@ -154,7 +145,6 @@ function CampaignDashboard() {
                 maxQuantity: 0
             });
 
-            // Обновляем страницу
             setTimeout(() => window.location.reload(), 2000);
         } catch (err: any) {
             console.error('Error adding reward:', err);

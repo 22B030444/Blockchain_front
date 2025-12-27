@@ -1,4 +1,3 @@
-// hooks/useCampaign.ts
 import { useState, useEffect, useContext } from 'react';
 import { Web3Context } from '../contexts/Web3Context';
 import { Campaign } from '../types/campaign';
@@ -20,7 +19,6 @@ export const useCampaign = (campaignId: number) => {
                 setLoading(true);
                 console.log('Loading campaign ID:', campaignId);
 
-                // Проверяем существование кампании
                 const campaignCounter = await contract.campaignCounter();
                 if (campaignId >= Number(campaignCounter)) {
                     throw new Error('The campaign does not exist');
@@ -28,7 +26,6 @@ export const useCampaign = (campaignId: number) => {
 
                 const data = await contract.getCampaign(campaignId);
 
-                // Загружаем дополнительные данные
                 const milestones = await contract.getCampaignMilestones(campaignId);
                 const rewards = await contract.getCampaignRewards(campaignId);
                 const reviews = await contract.getCampaignReviews(campaignId);
@@ -39,12 +36,12 @@ export const useCampaign = (campaignId: number) => {
                     creator: data.creator,
                     title: data.title,
                     description: data.description,
-                    imageUrl: data.imageHash, // В контракте это imageHash
+                    imageUrl: data.imageHash,
                     goal: data.goalAmount,
                     deadline: Number(data.deadline),
                     amountCollected: data.currentAmount,
                     category: Number(data.category),
-                    state: Number(data.status), // В контракте это status
+                    state: Number(data.status),
                     minDonation: data.minDonation,
                     createdAt: Number(data.createdAt),
                     fundsWithdrawn: data.fundsWithdrawn,

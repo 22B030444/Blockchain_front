@@ -1,4 +1,3 @@
-// types/ethereum.d.ts
 interface Window {
     ethereum?: {
         isMetaMask?: boolean;

@@ -1,4 +1,3 @@
-// utils/formatters.ts
 import { ethers } from 'ethers';
 
 export const formatEther = (value: bigint): string => {
@@ -15,7 +14,7 @@ export const parseEther = (value: string): bigint => {
         return ethers.parseEther(cleanValue);
     } catch (error) {
         console.error('Error parsing ether:', error);
-        return 0n; // Возвращаем 0 при ошибке
+        return 0n;
     }
 };
 export const formatAddress = (address: string): string => {

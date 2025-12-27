@@ -1,4 +1,3 @@
-// pages/CreateCampaign.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWeb3 } from '../contexts/Web3Context';
@@ -14,7 +13,6 @@ function CreateCampaign() {
     const { contract, account } = useWeb3();
     const navigate = useNavigate();
 
-    // Основные поля
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [imageUrl, setImageUrl] = useState('');
@@ -23,11 +21,9 @@ function CreateCampaign() {
     const [minDonation, setMinDonation] = useState('0.001');
     const [category, setCategory] = useState<CampaignCategory>(CampaignCategory.TECHNOLOGY);
 
-    // Состояние
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Валидация
     const validate = (): string | null => {
         if (!title.trim()) return 'Please provide the title';
         if (!description.trim()) return 'Please provide a description';
@@ -39,7 +35,6 @@ function CreateCampaign() {
         return null;
     };
 
-    // Создание кампании
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -74,15 +69,14 @@ function CreateCampaign() {
                 minDonation: parseEther(minDonation)
             });
 
-            // ПРАВИЛЬНЫЙ ВЫЗОВ ФУНКЦИИ КОНТРАКТА
             const tx = await contract.createCampaign(
-                title,                              // string _title
-                description,                        // string _description
-                imageUrl,                          // string _imageHash
-                Number(category),                  // Category _category
-                parseEther(goal),                  // uint256 _goalAmount
-                Number(durationDays),              // uint256 _durationDays
-                parseEther(minDonation)            // uint256 _minDonation
+                title,
+                description,
+                imageUrl,
+                Number(category),
+                parseEther(goal),
+                Number(durationDays),
+                parseEther(minDonation)
             );
 
             console.log('Transaction sent:', tx.hash);
@@ -93,7 +87,6 @@ function CreateCampaign() {
         } catch (err: any) {
             console.error('Error creating campaign:', err);
 
-            // Более детальная обработка ошибок
             let errorMessage = 'Error creating campaign:';
             if (err.reason) {
                 errorMessage = err.reason;

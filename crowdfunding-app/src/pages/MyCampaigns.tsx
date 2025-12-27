@@ -1,4 +1,3 @@
-// pages/MyCampaigns.tsx
 import { useNavigate } from 'react-router-dom';
 import { useWeb3 } from '../contexts/Web3Context';
 import { useCampaigns } from '../hooks/useCampaigns';
@@ -15,14 +14,10 @@ function MyCampaigns() {
     const { account } = useWeb3();
     const { campaigns, loading, error } = useCampaigns();
 
-
-    // Фильтруем только кампании текущего пользователя
     const myCampaigns = campaigns.filter(
         campaign => campaign.creator.toLowerCase() === account?.toLowerCase()
     );
 
-
-    // Группируем по статусу
     const activeCampaigns = myCampaigns.filter(c => c.state === CampaignState.Active);
     const successfulCampaigns = myCampaigns.filter(c => c.state === CampaignState.Successful);
     const completedCampaigns = myCampaigns.filter(c => c.state === CampaignState.Completed);
@@ -73,7 +68,6 @@ function MyCampaigns() {
     }
 
 
-    // Статистика
     const stats = [
         {
             label: 'Total campaigns',
@@ -201,7 +195,7 @@ function MyCampaigns() {
                                             <CampaignCard
                                                 key={campaign.id}
                                                 campaign={campaign}
-                                                showManageButton={true}  // Добавьте этот проп
+                                                showManageButton={true}
                                             />
                                         ))}
                                     </div>
@@ -220,7 +214,7 @@ function MyCampaigns() {
                                                 <CampaignCard
                                                     key={campaign.id}
                                                     campaign={campaign}
-                                                    showManageButton={true}  // Добавьте этот проп
+                                                    showManageButton={true}
                                                 />
                                             ))}
                                         </div>

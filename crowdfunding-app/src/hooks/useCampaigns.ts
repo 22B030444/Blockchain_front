@@ -1,4 +1,3 @@
-// hooks/useCampaigns.ts
 import { useState, useEffect, useContext } from 'react';
 import { Web3Context } from '../contexts/Web3Context';
 import { Campaign, CampaignCategory } from '../types/campaign';
@@ -20,7 +19,6 @@ export const useCampaigns = (category?: CampaignCategory) => {
                 setLoading(true);
                 console.log('Loading campaigns...');
 
-                // Используем getAllCampaigns из контракта
                 const allCampaigns = await contract.getAllCampaigns();
                 console.log('Received campaigns:', allCampaigns.length);
 
@@ -29,12 +27,10 @@ export const useCampaigns = (category?: CampaignCategory) => {
                 for (let i = 0; i < allCampaigns.length; i++) {
                     const data = allCampaigns[i];
 
-                    // Фильтрация по категории если указана
                     if (category !== undefined && Number(data.category) !== category) {
                         continue;
                     }
 
-                    // Загружаем дополнительные данные
                     const milestones = await contract.getCampaignMilestones(data.id);
                     const rewards = await contract.getCampaignRewards(data.id);
                     const reviews = await contract.getCampaignReviews(data.id);
@@ -45,12 +41,12 @@ export const useCampaigns = (category?: CampaignCategory) => {
                         creator: data.creator,
                         title: data.title,
                         description: data.description,
-                        imageUrl: data.imageHash, // В контракте это imageHash
+                        imageUrl: data.imageHash,
                         goal: data.goalAmount,
                         deadline: Number(data.deadline),
                         amountCollected: data.currentAmount,
                         category: Number(data.category),
-                        state: Number(data.status), // В контракте это status
+                        state: Number(data.status),
                         minDonation: data.minDonation,
                         createdAt: Number(data.createdAt),
                         fundsWithdrawn: data.fundsWithdrawn,

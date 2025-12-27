@@ -1,4 +1,3 @@
-// pages/Explore.tsx
 import { useState } from 'react';
 import { useCampaigns } from '../hooks/useCampaigns';
 import { CampaignCategory, CampaignState } from '../types/campaign';
@@ -36,14 +35,12 @@ function Explore() {
         );
     }
 
-    // По статусу
     if (statusFilter !== null) {
         filteredCampaigns = filteredCampaigns.filter(
             campaign => campaign.state === statusFilter
         );
     }
 
-    // По поисковому запросу
     if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
         filteredCampaigns = filteredCampaigns.filter(
@@ -53,7 +50,6 @@ function Explore() {
         );
     }
 
-    // Сортировка
     const sortedCampaigns = [...filteredCampaigns].sort((a, b) => {
         switch (sortBy) {
             case 'newest':

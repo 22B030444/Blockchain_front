@@ -1,4 +1,3 @@
-// hooks/usePlatformStats.ts
 import { useState, useEffect, useContext } from 'react';
 import { Web3Context } from '../contexts/Web3Context';
 import { CampaignCategory } from '../types/campaign';
@@ -38,18 +37,15 @@ export const usePlatformStats = () => {
                 setLoading(true);
                 console.log('Loading platform statistics...');
 
-                // Get platform stats
                 const platformStats = await contract.getPlatformStats();
                 console.log('Platform stats:', platformStats);
 
-                // Calculate success rate
                 const successRate = platformStats[0] > 0
                     ? Math.round((Number(platformStats[2]) / Number(platformStats[0])) * 100)
                     : 0;
 
-                // Get category stats
                 const categoryStats: CategoryStats[] = [];
-                for (let i = 0; i <= 5; i++) { // 6 categories (0-5)
+                for (let i = 0; i <= 5; i++) {
                     try {
                         const catStats = await contract.getCategoryStats(i);
                         categoryStats.push({
@@ -66,7 +62,6 @@ export const usePlatformStats = () => {
                     }
                 }
 
-                // Get top campaigns (limit to 10)
                 let topCampaigns = [];
                 try {
                     const campaignCounter = await contract.campaignCounter();

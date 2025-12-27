@@ -1,4 +1,3 @@
-// pages/Home.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCampaigns } from '../hooks/useCampaigns';
