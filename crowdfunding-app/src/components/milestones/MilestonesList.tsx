@@ -1,154 +1,248 @@
-// components/milestones/MilestonesList.tsx
-import { Milestone, CampaignState } from '../../types/campaign';
-import MilestoneCard from './MilestoneCard';
-import { Card, CardContent } from '../ui/card';
+import { useState } from 'react';
+import { useWeb3 } from '../../contexts/Web3Context';
+import { Milestone } from '../../types/campaign';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
-import {
-    Flag,
-    Target,
-    CheckCircle,
-    Info
-} from 'lucide-react';
+import { Card, CardContent } from '../ui/card';
+import { AlertCircle, Loader2, ThumbsUp, ThumbsDown, CheckCircle, Clock, DollarSign } from 'lucide-react';
+
 
 interface MilestonesListProps {
     campaignId: number;
     milestones: Milestone[];
-    campaignState: CampaignState;
     isCreator: boolean;
     isDonor: boolean;
     onUpdate: () => void;
 }
 
-function MilestonesList({
-                            campaignId,
-                            milestones,
-                            campaignState,
-                            isCreator,
-                            isDonor,
-                            onUpdate
-                        }: MilestonesListProps) {
+
+function MilestonesList({ campaignId, milestones, isCreator, isDonor, onUpdate }: MilestonesListProps) {
+    const { contract } = useWeb3();
+    const [loading, setLoading] = useState<number | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+
+    const handleVote = async (milestoneIndex: number, voteFor: boolean) => {
+        if (!contract) return;
+
+
+        try {
+            setLoading(milestoneIndex);
+            setError(null);
+
+
+            const tx = await contract.voteForMilestone(campaignId, milestoneIndex, voteFor);
+            await tx.wait();
+
+
+            onUpdate();
+        } catch (err: any) {
+            console.error('Voting error:', err);
+            setError(err.message || 'Voting error');
+        } finally {
+            setLoading(null);
+        }
+    };
+
+
+    const handleWithdraw = async (milestoneIndex: number) => {
+        if (!contract) return;
+
+
+        try {
+            setLoading(milestoneIndex);
+            setError(null);
+
+
+            const tx = await contract.withdrawMilestone(campaignId, milestoneIndex);
+            await tx.wait();
+
+
+            onUpdate();
+        } catch (err: any) {
+            console.error('Output error:', err);
+            setError(err.message || 'Withdrawal error');
+        } finally {
+            setLoading(null);
+        }
+    };
+
+
     if (milestones.length === 0) {
-        return (
-            <div className="text-center py-12 text-gray-500">
-                <Flag className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                <p>No milestones set for this campaign</p>
-                <p className="text-sm mt-1">
-                    Creator can withdraw all funds at once after success
-                </p>
-            </div>
-        );
+        return null;
     }
 
-    const campaignSuccessful = campaignState === CampaignState.Successful ||
-        campaignState === CampaignState.Completed;
-
-    // Статистика
-    const completedCount = milestones.filter(m => m.completed).length;
-    const approvedCount = milestones.filter(m => m.approved).length;
-    const totalPercentage = milestones.reduce((sum, m) => sum + m.percentage, 0);
-    const completedPercentage = milestones
-        .filter(m => m.completed)
-        .reduce((sum, m) => sum + m.percentage, 0);
 
     return (
-        <div className="space-y-6">
-            {/* Header with Progress */}
-            <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                        <Target className="w-5 h-5 text-indigo-500" />
-                        Project Milestones
-                    </h3>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <CheckCircle className="w-4 h-4 text-green-500" />
-                        {completedCount} / {milestones.length} completed
-                    </div>
+        <div className="space-y-4">
+            {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+                    <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-red-800">{error}</p>
                 </div>
+            )}
 
-                {/* Overall Progress */}
-                <div className="p-4 bg-gray-50 rounded-lg space-y-2">
-                    <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Funds Released</span>
-                        <span className="font-medium">{completedPercentage}% of {totalPercentage}%</span>
-                    </div>
-                    <Progress
-                        value={totalPercentage > 0 ? (completedPercentage / totalPercentage) * 100 : 0}
-                        className="h-2"
-                    />
-                </div>
 
-                {/* Info for donors */}
-                {isDonor && !campaignSuccessful && (
-                    <Card className="border-blue-200 bg-blue-50">
-                        <CardContent className="pt-4 pb-4">
-                            <div className="flex items-start gap-2">
-                                <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                                <div className="text-sm text-blue-800">
-                                    <p className="font-medium">Milestone voting will be available after the campaign succeeds</p>
-                                    <p className="mt-1 text-blue-600">
-                                        As a donor, you'll be able to vote on milestone completion to release funds to the creator.
-                                    </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                )}
+            {milestones.map((milestone, index) => {
+                const totalVotes = milestone.votesFor + milestone.votesAgainst;
+                const approvalRate = totalVotes > 0
+                    ? Math.round((milestone.votesFor / totalVotes) * 100)
+                    : 0;
+                const isAutomatic = index === 0;
 
-                {/* Info about first milestone */}
-                {campaignSuccessful && milestones.length > 0 && !milestones[0].completed && isCreator && (
-                    <Card className="border-purple-200 bg-purple-50">
-                        <CardContent className="pt-4 pb-4">
-                            <div className="flex items-start gap-2">
-                                <Info className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
-                                <div className="text-sm text-purple-800">
-                                    <p className="font-medium">First milestone is available immediately!</p>
-                                    <p className="mt-1 text-purple-600">
-                                        You can withdraw the first {milestones[0].percentage}% without donor approval as initial funding.
-                                    </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                )}
-            </div>
 
-            {/* Milestones List */}
-            <div className="space-y-4">
-                {milestones.map((milestone, index) => (
-                    <MilestoneCard
+                return (
+                    <Card
                         key={index}
-                        campaignId={campaignId}
-                        milestoneIndex={index}
-                        milestone={milestone}
-                        isCreator={isCreator}
-                        isDonor={isDonor}
-                        campaignSuccessful={campaignSuccessful}
-                        onUpdate={onUpdate}
-                    />
-                ))}
-            </div>
+                        className={`${
+                            milestone.completed
+                                ? 'bg-green-50 border-green-200'
+                                : isAutomatic
+                                    ? 'border-blue-200 bg-blue-50/30'
+                                    : ''
+                        }`}
+                    >
+                        <CardContent className="p-5">
+                            {/* Заголовок */}
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <h3 className="text-lg font-semibold">
+                                            Stage {index}
+                                        </h3>
+                                        {isAutomatic && (
+                                            <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+                                                Auto
+                                            </Badge>
+                                        )}
+                                        {!isAutomatic && milestone.approved && (
+                                            <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
+                                                <CheckCircle className="w-3 h-3 mr-1" />
+                                                Approved
+                                            </Badge>
+                                        )}
+                                        {milestone.completed && (
+                                            <Badge className="bg-green-600 text-white hover:bg-green-600">
+                                                <CheckCircle className="w-3 h-3 mr-1" />
+                                                Withdrawn
+                                            </Badge>
+                                        )}
+                                    </div>
+                                    <p className="text-gray-700">{milestone.title || milestone.description}</p>
+                                </div>
 
-            {/* Legend */}
-            <div className="flex flex-wrap gap-4 text-xs text-gray-500 pt-4 border-t">
-                <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded bg-purple-200" />
-                    <span>Initial (no vote required)</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded bg-yellow-200" />
-                    <span>Pending vote</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded bg-blue-200" />
-                    <span>Approved</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <div className="w-3 h-3 rounded bg-green-200" />
-                    <span>Completed</span>
-                </div>
-            </div>
+
+                                <div className="text-right ml-4">
+                                    <div className="text-2xl font-bold text-indigo-600">
+                                        {milestone.percentage}%
+                                    </div>
+                                    <div className="text-sm text-gray-500">от цели</div>
+                                </div>
+                            </div>
+
+
+                            {/* Голосование (только для milestone 1+) */}
+                            {!isAutomatic && !milestone.completed && (
+                                <div className="space-y-3 pt-3 border-t">
+                                    <div className="flex justify-between text-sm text-gray-600">
+                                       <span className="flex items-center gap-1">
+                                           <ThumbsUp className="w-4 h-4 text-green-600" />
+                                           For: {milestone.votesFor}
+                                       </span>
+                                        <span className="flex items-center gap-1">
+                                           <ThumbsDown className="w-4 h-4 text-red-600" />
+                                           Against: {milestone.votesAgainst}
+                                       </span>
+                                        <span className="font-medium">
+                                           Approval: {approvalRate}%
+                                       </span>
+                                    </div>
+
+
+                                    <Progress
+                                        value={approvalRate}
+                                        className={`h-2 ${approvalRate >= 51 ? 'bg-green-100' : 'bg-red-100'}`}
+                                    />
+
+
+                                    {/* Кнопки голосования для доноров */}
+                                    {isDonor && !milestone.approved && (
+                                        <div className="flex gap-2 pt-2">
+                                            <Button
+                                                onClick={() => handleVote(index, true)}
+                                                disabled={loading === index}
+                                                variant="outline"
+                                                className="flex-1 border-green-600 text-green-700 hover:bg-green-50"
+                                            >
+                                                {loading === index ? (
+                                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                                ) : (
+                                                    <>
+                                                        <ThumbsUp className="w-4 h-4 mr-1" />
+                                                        For
+                                                    </>
+                                                )}
+                                            </Button>
+                                            <Button
+                                                onClick={() => handleVote(index, false)}
+                                                disabled={loading === index}
+                                                variant="outline"
+                                                className="flex-1 border-red-600 text-red-700 hover:bg-red-50"
+                                            >
+                                                {loading === index ? (
+                                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                                ) : (
+                                                    <>
+                                                        <ThumbsDown className="w-4 h-4 mr-1" />
+                                                        Against
+                                                    </>
+                                                )}
+                                            </Button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+
+                            {/* Кнопка вывода для создателя */}
+                            {isCreator && !milestone.completed && (
+                                <div className="pt-3 border-t mt-3">
+                                    {(isAutomatic || milestone.approved) ? (
+                                        <Button
+                                            onClick={() => handleWithdraw(index)}
+                                            disabled={loading === index}
+                                            variant="default"
+                                            className="w-full bg-green-600 hover:bg-green-700"
+                                        >
+                                            {loading === index ? (
+                                                <>
+                                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                    Processing...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <DollarSign className="w-4 h-4 mr-2" />
+                                                    Withdraw funds
+                                                </>
+                                            )}
+                                        </Button>
+                                    ) : (
+                                        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg flex items-center gap-2 text-sm text-yellow-800">
+                                            <Clock className="w-4 h-4" />
+                                            <span>Waiting for donor approval (51% required)</span>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                );
+            })}
         </div>
     );
 }
 
+
 export default MilestonesList;
+
