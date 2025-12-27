@@ -1,4 +1,4 @@
-// components/campaigns/RefundForm.tsx
+
 import { useState } from 'react';
 import { useWeb3 } from '../../contexts/Web3Context';
 import { Campaign, CampaignState } from '../../types/campaign';
@@ -72,12 +72,10 @@ function RefundForm({ campaignId, campaign, userDonation, onSuccess }: RefundFor
         }
     };
 
-    // Don't show if user hasn't donated
     if (!hasDonated) {
         return null;
     }
 
-    // Campaign not failed yet
     if (!isFailed) {
         return null;
     }

@@ -1,4 +1,3 @@
-// components/campaigns/UpdateStatusButton.tsx
 import { useState } from 'react';
 import { useWeb3 } from '../../contexts/Web3Context';
 import { Campaign, CampaignState } from '../../types/campaign';
@@ -73,12 +72,9 @@ function UpdateStatusButton({ campaignId, campaign, onSuccess }: UpdateStatusBut
         }
     };
 
-    // Не показываем, если кампания уже не активна
     if (!isActive) {
         return null;
     }
-
-    // Кампания ещё активна (дедлайн не прошёл)
     if (!isDeadlinePassed) {
         const daysLeft = Math.ceil((campaign.deadline - now) / 86400);
 
@@ -109,7 +105,6 @@ function UpdateStatusButton({ campaignId, campaign, onSuccess }: UpdateStatusBut
         );
     }
 
-    // Дедлайн прошёл, можно обновить статус
     return (
         <Card className="border-2 border-orange-200 bg-orange-50/50">
             <CardContent className="pt-6 space-y-4">

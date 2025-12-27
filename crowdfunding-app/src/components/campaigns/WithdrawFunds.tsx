@@ -1,4 +1,4 @@
-// components/campaigns/WithdrawFunds.tsx
+
 import { useState } from 'react';
 import { useWeb3 } from '../../contexts/Web3Context';
 import { Campaign, CampaignState } from '../../types/campaign';
@@ -29,8 +29,6 @@ function WithdrawFunds({ campaignId, campaign, onSuccess }: WithdrawFundsProps) 
     const isSuccessful = campaign.state === CampaignState.Successful;
     const hasMilestones = campaign.milestones && campaign.milestones.length > 0;
     const alreadyWithdrawn = campaign.fundsWithdrawn;
-
-    // Calculate available amount to withdraw
     const availableAmount = campaign.amountCollected;
 
     const handleWithdraw = async () => {
@@ -81,12 +79,10 @@ function WithdrawFunds({ campaignId, campaign, onSuccess }: WithdrawFundsProps) 
         }
     };
 
-    // Don't show component if not creator
     if (!isCreator) {
         return null;
     }
 
-    // Already withdrawn
     if (alreadyWithdrawn) {
         return (
             <Card className="border-green-200 bg-green-50">
@@ -107,7 +103,6 @@ function WithdrawFunds({ campaignId, campaign, onSuccess }: WithdrawFundsProps) 
         );
     }
 
-    // Campaign has milestones
     if (hasMilestones) {
         return (
             <Card className="border-blue-200 bg-blue-50">
@@ -128,7 +123,6 @@ function WithdrawFunds({ campaignId, campaign, onSuccess }: WithdrawFundsProps) 
         );
     }
 
-    // Campaign not successful
     if (!isSuccessful) {
         return (
             <Card className="border-yellow-200 bg-yellow-50">

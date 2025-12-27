@@ -1,4 +1,4 @@
-// components/campaigns/DonorsTab.tsx
+
 import { useEffect, useState } from 'react';
 import { useWeb3 } from '../../contexts/Web3Context';
 import { formatEther, formatDate, formatAddress } from '../../utils/formatters';

@@ -1,4 +1,4 @@
-// components/campaigns/CategoryFilter.tsx
+
 import { CampaignCategory, CATEGORY_NAMES } from '../../types/campaign';
 import { Button } from '../ui/button';
 

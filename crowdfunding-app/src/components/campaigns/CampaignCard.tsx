@@ -42,9 +42,7 @@ function CampaignCard({ campaign, showManageButton = false }: CampaignCardProps)
         navigate(`/campaign/${campaign.id}/dashboard`);
     };
 
-    // @ts-ignore
-    // @ts-ignore
-    // @ts-ignore
+
     return (
         <div className="bg-white rounded-xl shadow-md overflow-hidden transform transition-all hover:shadow-xl">
             {/* Image */}
