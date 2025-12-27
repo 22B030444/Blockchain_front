@@ -275,7 +275,7 @@ function Statistics() {
                                                 {campaign.title}
                                             </h4>
                                             <p className="text-sm text-gray-500">
-                                                {CATEGORY_NAMES[campaign.category]}
+                                                {CATEGORY_NAMES[campaign.category as keyof typeof CATEGORY_NAMES] || 'Unknown'}
                                             </p>
                                         </div>
 
@@ -285,7 +285,7 @@ function Statistics() {
                                                 {formatEther(campaign.currentAmount)} ETH
                                             </p>
                                             <p className="text-xs text-gray-500 flex items-center gap-1">
-                                                <Users className="w-3 h-3" />
+                                                <Users className="w-3 h-3"/>
                                                 {Number(campaign.totalDonors)} donors
                                             </p>
                                         </div>

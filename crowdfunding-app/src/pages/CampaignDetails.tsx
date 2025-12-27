@@ -7,7 +7,6 @@ import { CampaignState, CATEGORY_NAMES } from '../types/campaign';
 import DonateForm from '../components/campaigns/DonateForm';
 import WithdrawFunds from '../components/campaigns/WithdrawFunds';
 import RefundForm from '../components/campaigns/RefundForm';
-import UpdateStatusButton from '../components/campaigns/UpdateStatusButton';
 import MilestonesList from '../components/milestones/MilestonesList';
 import RewardsList from '../components/rewards/RewardsList';
 import AddReview from '../components/reviews/AddReview';
@@ -340,11 +339,17 @@ function CampaignDetails() {
                                         )}
                                     </TabsContent>
 
+                                    // Исправленный фрагмент для страницы CampaignDetails.tsx
+                                    // Замените TabsContent для rewards на этот код:
+
                                     <TabsContent value="rewards" className="mt-0">
                                         {campaign.rewards && campaign.rewards.length > 0 ? (
                                             <RewardsList
+                                                campaignId={campaignId}
                                                 rewards={campaign.rewards}
                                                 userDonation={userDonation}
+                                                campaignSuccessful={campaign.state === CampaignState.Successful || campaign.state === CampaignState.Completed}
+                                                onUpdate={handleRefresh}
                                             />
                                         ) : (
                                             <div className="text-center py-12 text-gray-500">
@@ -381,13 +386,6 @@ function CampaignDetails() {
                     {/* Right column - donate/withdraw/refund forms */}
                     <div className="lg:col-span-1">
                         <div className="sticky top-24 space-y-6">
-                            {/* UPDATE STATUS BUTTON - NEW! */}
-                            <UpdateStatusButton
-                                campaignId={campaignId}
-                                campaign={campaign}
-                                onSuccess={handleRefresh}
-                            />
-
                             {/* Withdraw Funds - for creator of successful campaign */}
                             {isCreator && (
                                 <WithdrawFunds

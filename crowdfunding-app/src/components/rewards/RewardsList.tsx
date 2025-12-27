@@ -1,9 +1,6 @@
 // components/rewards/RewardsList.tsx
-import { useState, useEffect } from 'react';
-import { useWeb3 } from '../../contexts/Web3Context';
 import { Reward } from '../../types/campaign';
 import { formatEther } from '../../utils/formatters';
-import ClaimRewardButton from './ClaimRewardButton';
 import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Progress } from '../ui/progress';
@@ -11,87 +8,24 @@ import {
     Gift,
     Users,
     Coins,
-    CheckCircle,
-    Lock
+    CheckCircle
 } from 'lucide-react';
 
 interface RewardsListProps {
     campaignId: number;
     rewards: Reward[];
     userDonation: bigint;
-    campaignSuccessful: boolean;
+    campaignSuccessful?: boolean;
     onUpdate?: () => void;
-}
-
-interface RewardClaimStatus {
-    canClaim: boolean;
-    reason: string;
-    hasClaimed: boolean;
 }
 
 function RewardsList({
                          campaignId,
                          rewards,
                          userDonation,
-                         campaignSuccessful,
+                         campaignSuccessful = false,
                          onUpdate
                      }: RewardsListProps) {
-    const { contract, account } = useWeb3();
-    const [claimStatuses, setClaimStatuses] = useState<Record<number, RewardClaimStatus>>({});
-    const [loading, setLoading] = useState(true);
-
-    // Загружаем статусы claim для каждой награды
-    useEffect(() => {
-        const fetchClaimStatuses = async () => {
-            if (!contract || !account || rewards.length === 0) {
-                setLoading(false);
-                return;
-            }
-
-            try {
-                const statuses: Record<number, RewardClaimStatus> = {};
-
-                for (let i = 0; i < rewards.length; i++) {
-                    try {
-                        // Проверяем, может ли донор получить награду
-                        const [canClaim, reason] = await contract.canClaimReward(campaignId, i, account);
-
-                        // Проверяем, уже ли получена награда
-                        const hasClaimed = await contract.hasDonorClaimedReward(campaignId, i, account);
-
-                        statuses[i] = {
-                            canClaim,
-                            reason,
-                            hasClaimed
-                        };
-                    } catch (err) {
-                        console.error(`Error checking reward ${i}:`, err);
-                        statuses[i] = {
-                            canClaim: false,
-                            reason: 'Error checking status',
-                            hasClaimed: false
-                        };
-                    }
-                }
-
-                setClaimStatuses(statuses);
-            } catch (err) {
-                console.error('Error fetching claim statuses:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchClaimStatuses();
-    }, [contract, account, campaignId, rewards]);
-
-    const handleClaimSuccess = () => {
-        // Перезагружаем статусы
-        if (onUpdate) {
-            onUpdate();
-        }
-    };
-
     if (rewards.length === 0) {
         return (
             <div className="text-center py-12 text-gray-500">
@@ -121,7 +55,7 @@ function RewardsList({
                 <Card className="border-amber-200 bg-amber-50">
                     <CardContent className="pt-4 pb-4">
                         <div className="flex items-start gap-2">
-                            <Lock className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                            <Gift className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                             <div>
                                 <p className="text-sm text-amber-800 font-medium">
                                     Rewards will be available after the campaign succeeds
@@ -138,7 +72,6 @@ function RewardsList({
             {/* Список наград */}
             <div className="space-y-4">
                 {rewards.map((reward, index) => {
-                    const claimStatus = claimStatuses[index];
                     const isEligible = userDonation >= reward.minAmount;
                     const claimedPercentage = reward.maxQuantity > 0
                         ? (reward.claimed / reward.maxQuantity) * 100
@@ -227,20 +160,17 @@ function RewardsList({
                                         )}
                                     </div>
 
-                                    {/* Кнопка Claim */}
+                                    {/* Статус для донора */}
                                     {campaignSuccessful && userDonation > 0n && (
                                         <div className="flex-shrink-0">
-                                            {loading ? (
-                                                <div className="text-sm text-gray-500">Loading...</div>
+                                            {isEligible ? (
+                                                <div className="text-sm text-green-700 bg-green-50 px-3 py-2 rounded-lg">
+                                                    ✓ You qualify for this reward
+                                                </div>
                                             ) : (
-                                                <ClaimRewardButton
-                                                    campaignId={campaignId}
-                                                    rewardIndex={index}
-                                                    canClaim={claimStatus?.canClaim || false}
-                                                    reason={claimStatus?.reason}
-                                                    hasClaimed={claimStatus?.hasClaimed || false}
-                                                    onSuccess={handleClaimSuccess}
-                                                />
+                                                <div className="text-sm text-gray-500 px-3 py-2 rounded-lg bg-gray-50">
+                                                    Need {formatEther(reward.minAmount - userDonation)} ETH more
+                                                </div>
                                             )}
                                         </div>
                                     )}
