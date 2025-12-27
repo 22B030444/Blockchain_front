@@ -5,6 +5,8 @@ import { useWeb3 } from '../contexts/Web3Context';
 import { useCampaign } from '../hooks/useCampaign';
 import { CampaignState, CATEGORY_NAMES } from '../types/campaign';
 import DonateForm from '../components/campaigns/DonateForm';
+import WithdrawFunds from '../components/campaigns/WithdrawFunds';
+import RefundForm from '../components/campaigns/RefundForm';
 import MilestonesList from '../components/milestones/MilestonesList';
 import RewardsList from '../components/rewards/RewardsList';
 import AddReview from '../components/reviews/AddReview';
@@ -40,7 +42,7 @@ function CampaignDetails() {
     const [isDonor, setIsDonor] = useState(false);
     const [hasReviewed, setHasReviewed] = useState(false);
 
-    // Загрузка информации о донате пользователя
+    // Load user donation information
     useEffect(() => {
         const fetchUserDonation = async () => {
             if (!contract || !account || !campaign) return;
@@ -57,7 +59,7 @@ function CampaignDetails() {
         fetchUserDonation();
     }, [contract, account, campaignId, campaign]);
 
-    // Проверка, оставлял ли пользователь отзыв
+    // Check if user has reviewed
     useEffect(() => {
         const checkReview = async () => {
             if (!contract || !account || !campaign) return;
@@ -148,7 +150,7 @@ function CampaignDetails() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Кнопка назад */}
+                {/* Back button */}
                 <Button
                     onClick={() => navigate('/')}
                     variant="ghost"
@@ -158,7 +160,7 @@ function CampaignDetails() {
                     Back
                 </Button>
 
-                {/* Кнопка управления для создателя */}
+                {/* Management button for creator */}
                 {isCreator && (
                     <Button
                         onClick={() => navigate(`/campaign/${campaignId}/dashboard`)}
@@ -170,9 +172,9 @@ function CampaignDetails() {
                 )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Левая колонка - основная информация */}
+                    {/* Left column - main information */}
                     <div className="lg:col-span-2 space-y-6">
-                        {/* Изображение и заголовок */}
+                        {/* Image and header */}
                         <Card className="overflow-hidden">
                             <div className="relative aspect-video bg-gray-100">
                                 <img
@@ -206,7 +208,7 @@ function CampaignDetails() {
                                     )}
                                 </div>
 
-                                {/* Прогресс */}
+                                {/* Progress */}
                                 <div className="space-y-3 mb-6">
                                     <Progress value={progress} className="h-3" />
 
@@ -221,18 +223,18 @@ function CampaignDetails() {
                                             <div className="text-2xl font-bold text-gray-900">
                                                 {progress}%
                                             </div>
-                                            <div className="text-sm text-gray-600">from the target</div>
+                                            <div className="text-sm text-gray-600">of goal</div>
                                         </div>
                                         <div>
                                             <div className="text-2xl font-bold text-gray-900">
                                                 {formatEther(campaign.goal)}
                                             </div>
-                                            <div className="text-sm text-gray-600">ETH target</div>
+                                            <div className="text-sm text-gray-600">ETH goal</div>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Статистика */}
+                                {/* Statistics */}
                                 <div className="grid grid-cols-3 gap-4 pt-6 border-t">
                                     <div className="flex items-center gap-3">
                                         <div className="p-3 bg-indigo-50 rounded-lg">
@@ -250,11 +252,11 @@ function CampaignDetails() {
                                         </div>
                                         <div>
                                             <div className="text-sm text-gray-600">
-                                                {isActive && daysLeft > 0 ? 'Осталось' : 'Завершена'}
+                                                {isActive && daysLeft > 0 ? 'Remaining' : 'Completed'}
                                             </div>
                                             <div className="text-lg font-semibold">
                                                 {isActive && daysLeft > 0
-                                                    ? `${daysLeft} дн.`
+                                                    ? `${daysLeft} days`
                                                     : formatDate(campaign.deadline)}
                                             </div>
                                         </div>
@@ -273,7 +275,7 @@ function CampaignDetails() {
                                     )}
                                 </div>
 
-                                {/* Ваш донат */}
+                                {/* Your donation */}
                                 {isDonor && (
                                     <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                                         <div className="flex items-center gap-2 mb-1">
@@ -288,7 +290,7 @@ function CampaignDetails() {
                             </CardContent>
                         </Card>
 
-                        {/* Вкладки с контентом */}
+                        {/* Tabs with content */}
                         <Card>
                             <Tabs defaultValue="description" className="w-full">
                                 <CardHeader className="pb-4">
@@ -328,7 +330,7 @@ function CampaignDetails() {
                                         ) : (
                                             <div className="text-center py-12 text-gray-500">
                                                 <Flag className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                                                <p>The stages are not specified</p>
+                                                <p>No milestones specified</p>
                                             </div>
                                         )}
                                     </TabsContent>
@@ -342,14 +344,14 @@ function CampaignDetails() {
                                         ) : (
                                             <div className="text-center py-12 text-gray-500">
                                                 <Gift className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                                                <p>No rewards are provided</p>
+                                                <p>No rewards provided</p>
                                             </div>
                                         )}
                                     </TabsContent>
 
                                     <TabsContent value="reviews" className="mt-0">
                                         <div className="space-y-6">
-                                            {/* Форма добавления отзыва */}
+                                            {/* Add review form */}
                                             <AddReview
                                                 campaignId={campaignId}
                                                 campaign={campaign}
@@ -358,7 +360,7 @@ function CampaignDetails() {
                                                 onSuccess={handleRefresh}
                                             />
 
-                                            {/* Список отзывов */}
+                                            {/* Reviews list */}
                                             <ReviewsList reviews={campaign.reviews || []} />
                                         </div>
                                     </TabsContent>
@@ -367,9 +369,29 @@ function CampaignDetails() {
                         </Card>
                     </div>
 
-                    {/* Правая колонка - форма доната */}
+                    {/* Right column - donate/withdraw/refund forms */}
                     <div className="lg:col-span-1">
-                        <div className="sticky top-24">
+                        <div className="sticky top-24 space-y-6">
+                            {/* Withdraw Funds - for creator of successful campaign */}
+                            {isCreator && (
+                                <WithdrawFunds
+                                    campaignId={campaignId}
+                                    campaign={campaign}
+                                    onSuccess={handleRefresh}
+                                />
+                            )}
+
+                            {/* Refund Form - for donors of failed campaign */}
+                            {!isCreator && (
+                                <RefundForm
+                                    campaignId={campaignId}
+                                    campaign={campaign}
+                                    userDonation={userDonation}
+                                    onSuccess={handleRefresh}
+                                />
+                            )}
+
+                            {/* Donate Form - for active campaigns */}
                             <DonateForm
                                 campaignId={campaignId}
                                 campaign={campaign}
@@ -384,3 +406,4 @@ function CampaignDetails() {
 }
 
 export default CampaignDetails;
+
