@@ -1,4 +1,3 @@
-
 import { Review } from '../../types/campaign';
 import {formatAddress, formatDate} from '../../utils/formatters';
 import { Card, CardContent } from '../ui/card';

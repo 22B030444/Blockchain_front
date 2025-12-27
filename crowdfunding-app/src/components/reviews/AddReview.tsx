@@ -1,4 +1,4 @@
-// components/reviews/AddReview.tsx
+
 import { useState } from 'react';
 import { useWeb3 } from '../../contexts/Web3Context';
 import { Campaign, CampaignState } from '../../types/campaign';

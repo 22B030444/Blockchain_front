@@ -1,4 +1,3 @@
-// components/Footer.tsx
 import { Link } from 'react-router-dom';
 import { Github, Twitter, Mail, Heart, TrendingUp } from 'lucide-react';
 

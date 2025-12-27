@@ -1,4 +1,3 @@
-// components/rewards/ClaimRewardButton.tsx
 import { useState } from 'react';
 import { useWeb3 } from '../../contexts/Web3Context';
 import { Button } from '../ui/button';
@@ -51,7 +50,7 @@ function ClaimRewardButton({
 
             setSuccess(true);
 
-            // Обновляем через 2 секунды
+
             setTimeout(() => {
                 onSuccess();
             }, 2000);
@@ -63,7 +62,7 @@ function ClaimRewardButton({
         }
     };
 
-    // Уже получена
+
     if (hasClaimed || success) {
         return (
             <div className="flex items-center gap-2 text-green-600">
@@ -73,7 +72,7 @@ function ClaimRewardButton({
         );
     }
 
-    // Нельзя получить
+
     if (!canClaim) {
         return (
             <div className="flex items-center gap-2 text-gray-400">

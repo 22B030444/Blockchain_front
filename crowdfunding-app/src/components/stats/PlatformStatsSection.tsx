@@ -1,4 +1,3 @@
-// components/stats/PlatformStatsSection.tsx
 import { usePlatformStats } from '../../hooks/usePlatformStats';
 import { formatEther } from '../../utils/formatters';
 import { Card, CardContent } from '../ui/card';

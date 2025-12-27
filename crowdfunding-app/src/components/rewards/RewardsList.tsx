@@ -1,4 +1,3 @@
-// components/rewards/RewardsList.tsx
 import { Reward } from '../../types/campaign';
 import { formatEther } from '../../utils/formatters';
 import { Card, CardContent } from '../ui/card';
